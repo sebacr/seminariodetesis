@@ -1,0 +1,22 @@
+# Datos, variables y métodos
+
+## Datos
+
+Para cumplir con el objetivo general se utilizan los datos correspondientes a la Encuesta Nacional de Opinión Pública Nº 39 (Marzo-Abril 2000), N° 59 (Mayo-Junio 2009) y N° 83 (Mayo 2019) llevada a cabo por el Centro de Estudios Públicos (CEP) llevadas a cabo por el Centro de Estudios Públicos (CEP). La base de datos del 2000 tiene una muestra compuesta por 1380 encuestados. La del 2009.. Por último, la del 2019... Los procesos de selección de las muestras son probabilísticos, por conglomerados y de multietapas.
+
+## Variables
+
+### Variables dependientes
+
+Las variables dependientes de la presente investigación son los distintos tipos de atribuciones hacia la pobreza y la riqueza. Para el caso de las causas de la pobreza, se utilizará la variable que corresponde a la siguiente pregunta: “Como usted sabe, en Chile hay personas que son pobres. ¿Cuáles de las alternativas de esta lista cree usted que son las dos causas más frecuentes de que estas personas sean pobres?”. A continuación, las y los encuestados debían seleccionar dos respuestas. La variable y respuestas aparecen en la **Tabla 1**.  
+Para el caso de las atribuciones de riqueza, se utiliza la variable correspondiente a la siguiente pregunta: “Como usted sabe, también en Chile hay personas que tienen éxito económico, es decir, ganan dinero suficiente para llevar una vida acomodada. ¿Cuál de las alternativas de esta lista cree usted que son las dos más importantes en el éxito económico de las personas?”. De igual manera, las y los encuestados seleccionaron dos respuestas. La variable y respuestas aparecen en la **Tabla 2**. 
+
+### Variables independientes
+
+Las principales variables independientes con las que se trabajará corresponden a las dimensiones de percepción y preferencias meritocráticas. Para cada una de ellas se consideró una serie de indicadores, en donde para las percepciones meritocráticas se enfatiza en la descripción de los participantes sobre cuán importante son distintos factores para surgir en la vida. Mientras que, para las preferencias meritocráticas, el énfasis está puesto en lo normativo, a lo cual se pregunta cuán importante deberían ser distintos factores para decidir cuánto debería ganar la gente. En la **Tabla 3** se observa la operacionalización de las variables de percepción y preferencia meritocráticas.
+Finalmente, se incluirán variables independientes y sociodemográficas como variables de control. Estas son: Sexo, Educación, Ingreso, Estatus Social Subjetivo, Orientación Política, Etnicidad. En la **Tabla 4** pueden observarse los estadísticos descriptivos básicos para las variables independientes y de control. Los resultados expuestos son anteriores a su ponderación, por lo que pueden variar respecto de los valores del encontrados en el Manual de Usuario Encuesta CEP N° 83. 
+Para la lectura de la **Tabla 4**, debe considerarse la codificación de algunas variables. Para Sexo, Hombre = 1 y Mujer = 2. Para Educación, "Primaria incompleta menos" = 1, "Primaria y secundaria baja" = 2, "Secundaria alta" = 3, "Terciaria ciclo corto" = 4, "Terciaria y Postgrado" = 5. Identificación política se categoriza en "Derecha" = 1, "Centro" = 2, "Izquierda" = 3, "Ninguno/independiente" = 4. Para Etnicidad, se ha dicotomizado, siendo la categoría “Pueblo originario" = 1, y "Ninguno" = 2.
+
+## Métodos
+
+Se elaborarán clases latentes para las combinaciones de atribuciones de pobreza y riqueza. El posterior análisis se realizará a partir de modelos multivariados que incorporen las atribuciones de pobreza y riqueza a partir de los resultados del modelo de clases latentes. 

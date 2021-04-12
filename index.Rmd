@@ -1,0 +1,29 @@
+---
+title: 'Tesis de grado'
+subtitle: "El efecto de las creencias meritocráticas sobre las atribuciones de pobreza y riqueza"
+author: "Sebastián Cortínez Rojas"
+date: "Fecha" # o para fecha actual: "`r Sys.Date()`"
+institution: "Universidad de Chile"
+degree: "Tesis de Grado - Carrera de Sociología"
+advisor: "Profesor guía: Juan Carlos Castillo"
+bibliography: [tesis.bib]
+biblio-style: apalike
+link-citations: yes
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+fontsize: 14pt
+lof: True
+lot: True
+
+---
+
+
+# Resumen {-}
+
+Resumen  aquí
+
+
+# Agradecimientos {-}
+
+Agradecimientos aquí.

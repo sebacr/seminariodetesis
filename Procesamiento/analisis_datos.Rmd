@@ -1,0 +1,444 @@
+---
+title: "Preparación de datos. Tesis pregrado sociología."
+author: "Sebastián Cortinez"
+date: "30-03-2021"
+output: html_document
+---
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+options(scipen=999) # valores sin notación científica
+#install.packages("pacman")
+library(pacman)
+#detach("package:memisc", unload = TRUE)
+#install.packages("devtools")
+if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
+if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
+if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc)
+#webshot::install_phantomjs()
+
+### migracion <- read.spss("http://www.losmexicanos.unam.mx/migracion/encuesta_nacional/base_datos/Encuest### a_Nacional_de_Migracion.sav", to.data.frame = TRUE)
+### diccionario <- tibble(nombre = names(migracion), 
+###                    etiquetas = str_trim(attr(migracion, "variable.labels")))
+### migracion <- as.tibble(migracion)
+### typeof(migracion$p7_5)
+### migracion$ageb %>% class()
+
+#  Cargar bbdd
+
+load("../Input/Data_proc/proc_cep.RData")
+
+load("../Input/Data_proc/2019/proc_cep_2019.RData")
+```
+
+# Análisis datos 2019
+
+Descriptivos generales variables 2019
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_cep$at_pobreza1<-haven::as_factor(proc_cep$at_pobreza1)
+proc_cep$at_pobreza2<-haven::as_factor(proc_cep$at_pobreza2)
+proc_cep$at_riqueza1<-haven::as_factor(proc_cep$at_riqueza1)
+proc_cep$at_riqueza2<-haven::as_factor(proc_cep$at_riqueza2)
+proc_cep$año<-haven::as_factor(proc_cep$año)
+proc_cep$sexo<-haven::as_factor(proc_cep$sexo)
+proc_cep$id_politica<-haven::as_factor(proc_cep$id_politica)
+
+proc_cep_2019$at_pobreza1<-haven::as_factor(proc_cep_2019$at_pobreza1)
+proc_cep_2019$at_pobreza2<-haven::as_factor(proc_cep_2019$at_pobreza2)
+proc_cep_2019$at_riqueza1<-haven::as_factor(proc_cep_2019$at_riqueza1)
+proc_cep_2019$at_riqueza2<-haven::as_factor(proc_cep_2019$at_riqueza2)
+proc_cep_2019$año<-haven::as_factor(proc_cep_2019$año)
+proc_cep_2019$sexo<-haven::as_factor(proc_cep_2019$sexo)
+proc_cep_2019$id_politica<-haven::as_factor(proc_cep_2019$id_politica)
+
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+# Descriptivos 2019
+kable(papeR::summarize(proc_cep_2019, type = "numeric"),variable.labels = TRUE)
+kable(papeR::summarize(proc_cep_2019, type = "factor", cumulative = TRUE))
+```
+
+Análisis clases latentes
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+# Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
+
+proc_data<-data.table(proc_cep)
+
+frq(proc_cep$at_pobreza1)
+proc_data[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
+               base::ifelse(at_pobreza1 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+proc_data[, Att_p2 := ifelse(at_pobreza2 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
+               ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+frq(proc_cep$at_riqueza1)
+proc_data[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data[, Att_r2 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data<-as.data.frame(proc_data)
+
+# Ponemos las etiquetas que faltan
+
+proc_data$ESS <- set_label(x = proc_data$ESS,label = "Estatus social subjetivo")
+proc_data$id_politica <- set_label(x = proc_data$id_politica,label = "Identificacion politica")
+proc_data$nivel_educ <- set_label(x = proc_data$nivel_educ,label = "Nivel educacional")
+proc_data$pem_ambicion <- set_label(x = proc_data$pem_ambicion,label = "Percepcion meritocratica ambicion")
+proc_data$Att_p1 <- set_label(x = proc_data$Att_p1,label = "Atribucion pob int/ex primera mención")
+proc_data$Att_p2 <- set_label(x = proc_data$Att_p2,label = "Atribucion pob int/ex segunda mención")
+proc_data$Att_r1 <- set_label(x = proc_data$Att_r1,label = "Atribucion riq int/ex primera mención")
+proc_data$Att_r2 <- set_label(x = proc_data$Att_r2,label = "Atribucion riq int/ex segunda mención")
+proc_data$año <- set_label(x = proc_data$año,label = "Año")
+
+
+#proc_data[is.na(proc_data)] <- 0
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+# Al parecer hay que convertir atribuciones a numerico. 
+## At interna queda como 0 y At externa como 1
+
+proc_data$Att_p1[proc_data$Att_p1 == "atribucion interna"] <- 1
+proc_data$Att_p1[proc_data$Att_p1 == "atribucion externa"] <- 2
+
+proc_data$Att_p2[proc_data$Att_p2 == "atribucion interna"] <- 1
+proc_data$Att_p2[proc_data$Att_p2 == "atribucion externa"] <- 2
+
+proc_data$Att_r1[proc_data$Att_r1 == "atribucion interna"] <- 1
+proc_data$Att_r1[proc_data$Att_r1 == "atribucion externa"] <- 2
+
+proc_data$Att_r2[proc_data$Att_r2 == "atribucion interna"] <- 1
+proc_data$Att_r2[proc_data$Att_r2 == "atribucion externa"] <- 2
+
+proc_data$Att_p1 <- sjlabelled::set_labels(proc_data$Att_p1,
+            labels=c( "atribucion interna"=0,"atribucion externa"=1))
+proc_data$Att_p2 <- sjlabelled::set_labels(proc_data$Att_p2,
+            labels=c( "atribucion interna"=0,"atribucion externa"=1))
+proc_data$Att_r1 <- sjlabelled::set_labels(proc_data$Att_r1,
+            labels=c( "atribucion interna"=0,"atribucion externa"=1))
+proc_data$Att_r2 <- sjlabelled::set_labels(proc_data$Att_r2,
+            labels=c( "atribucion interna"=0,"atribucion externa"=1))
+
+
+proc_data$Att_p1<-as.numeric(proc_data$Att_p1)
+proc_data$Att_p2<-as.numeric(proc_data$Att_p2)
+proc_data$Att_r1<-as.numeric(proc_data$Att_r1)
+proc_data$Att_r2<-as.numeric(proc_data$Att_r2)
+
+# Primero, se señala que hay que transformar la data frame en lista con 'tibble'. Además, hay que generar diccionario
+## Surge un error: compatible size (columns)
+
+#proc_data[] <- lapply(proc_data, function(x) { attributes(x) <- NULL; x })
+#set_col_attr <- function(proc_data, attrs)
+#proc_data  <- set_col_attr(proc_data, c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito #educacion","Pref. merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros #hogar","ess","id. politica","nivel educacional","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2"))
+#proc_data %>% 
+#  sjlabelled::remove_all_labels()
+
+#papeR::labels(proc_data) <- c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito educacion","Pref. #merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros hogar","ess","id. #politica","nivel educacional","Per. merito ambicion","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2")
+#labels(proc_data)
+#is.ldf(proc_data)
+
+
+diccionario <- tibble::tibble(nombre = names(proc_data), 
+                    etiquetas = c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito educacion","Pref. merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros hogar","ess","id. politica","nivel educacional","Per. merito ambicion","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2"))
+
+proc_data <- as.tibble(proc_data)
+
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>% 
+  names() 
+f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 2, nrep = 4) -> LCA_2clases
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) -> bloque_att
+
+# Para UNIX
+#mclapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
+
+# Para Windows: 
+lapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
+
+
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+map_df(LCA_1a9, glance) %>% 
+  kable(caption = "Comparación de modelos con 1 a nueve clases")
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+map_df(LCA_1a9, glance) %>% 
+  dplyr::select(-df, -df.residual, -chi.squared) %>% 
+  mutate(modelo = as.character(1:nrow(.))) %>%
+  gather(cantidad, valor, -modelo) %>% 
+  ggplot(aes(x= modelo, y = valor, group = 1)) + 
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~cantidad, scales = "free") +
+    labs(title = "Comparación de modelos para el bloque p7", 
+         subtitle = "La pendiente se aplana a partir de modelos con dos clases") + 
+    theme_minimal()
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+etiquetas_item <- tibble(outcome = 1:length(levels(proc_data$Att_p1)), 
+                         etiqueta_item = levels(proc_data$Att_p1)
+)
+
+LCA_1a9[[3]] %>% 
+  tidy %>% 
+  left_join(dplyr::rename(diccionario, variable = nombre)) %>% 
+  left_join(etiquetas_item) %>% 
+  mutate(etiquetas = str_remove(etiquetas, 
+                                "Clase de atribuciones de pobreza y riqueza"), 
+         etiquetas = str_wrap(etiquetas, 30),
+         etiqueta_item = factor(etiqueta_item, 
+                                levels = c("Interna", "Externa")), 
+         class = paste("Clase", class)) %>%
+  ggplot(aes(x = etiquetas, fill = etiqueta_item, y = estimate)) + 
+  geom_col() + 
+  facet_wrap(~class, nrow = 1) + 
+  scale_fill_viridis_d() + 
+  theme_minimal() +
+  theme(legend.position = "bottom") + 
+  labs(fill = "Respuesta", 
+       x = "¿Estaría dispuesto o no estaría dispuesto a
+       permitir que en su casa vivieran personas ", 
+       y = "Probabilidad de respuesta por clase") + 
+  coord_flip()
+```
+
+
+Tabla atribuciones de pobreza 2019
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+# Falta mejorar visualización de tabla
+
+furniture::table1(proc_cep_2019,
+  "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab1
+
+kbl(tab1, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 1),bold = T) 
+#%>%
+#  save_kable("../Output/Tablas/at_pobreza_2019.html")
+
+```
+
+Gráfico (fail)
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+# opcion plot grid(para poner distintos graficos lado a lado). Ver si es mejor dejarlos en porcentaje agrupado por respuesta o por año. O en valor absoluto (eso si 2019 tiene menos casos)
+
+p1 <- ggplot(proc_data[ which(proc_data$Att_p1=='atribucion interna'),], aes( x = año) )  + 
+          geom_bar() + 
+      facet_wrap( ~ Att_p1 ) + 
+      xlab("At internas 1") + 
+      ylab("Cantidad respuestas")
+p1
+
+p2 <- ggplot(proc_data[ which(proc_data$Att_p2=='atribucion interna'),], aes( x = año) )  + 
+          geom_bar() + 
+      facet_wrap( ~ Att_p2 ) + 
+      xlab("At internas 2") + 
+      ylab("Cantidad respuestas")
+p2
+
+p3 <- ggplot(proc_data[ which(proc_data$Att_p1=='atribucion interna' & proc_data$Att_p2=='atribucion interna' & proc_data$Att_r1=='atribucion interna' & proc_data$Att_r2=='atribucion interna'),], aes( x = año) )  + 
+          geom_bar() + 
+      facet_wrap( ~ Att_r2 ) + 
+      xlab("At internas r2") + 
+      ylab("Cantidad respuestas")
+p3
+
+
+p2 <- ggplot(proc_data, aes(año, group=Att_p2) )  + 
+           geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count") +
+          scale_y_continuous(labels=scales::percent) +
+      facet_wrap( ~ Att_p2) + 
+      xlab("At internas 2") + 
+      labs(y = "Porcentaje", fill="Año")
+p2
+
+
+
+plot_grid(p1,p2)
+
+p2 + theme_bw() + 
+theme( axis.text.x = element_text( angle = 20,  hjust = 1 ) )
+
+# Opcion facet grid
+
+ggplot(proc_data,aes(x=Att_p1)) +
+  geom_bar(stat="count", position = position_dodge()) +
+  facet_grid(.~año)
+
+#ggplot(proc_cep, aes(x = at_pobreza1, y = count(at_), fill = año)) +
+ #   geom_bar(position = "stack", stat = "identity") +
+  #  facet_wrap( ~ at_pobreza2)
+
+
+#  p <- ggplot(proc_cep, aes(año, fill = at_pobreza1)) + facet_wrap(~at_pobreza2)
+#p + geom_bar()
+```
+
+Tabla atribuciones de riqueza 2019
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+
+furniture::table1(proc_cep_2019,
+  "Primera mención Atribuciones de riqueza" = at_riqueza1, "Segunda mención Atribuciones de riqueza" = at_riqueza2,bold = T,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab1
+
+kbl(tab1, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 1),bold = T) %>%
+  save_kable("../Output/Tablas/at_riqueza_2019.html")
+
+```
+
+
+# Análisis datos 2000, 2009 y 2019    
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_cep$at_pobreza1<-haven::as_factor(proc_cep$at_pobreza1)
+proc_cep$at_pobreza2<-haven::as_factor(proc_cep$at_pobreza2)
+
+
+furniture::table1(proc_cep,
+  "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
+  splitby = ~año,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab11
+
+table_format = if(is_html_output()) {
+  "html"
+} else if(is_latex_output()) {
+  "latex"
+}
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+# Intento de tabla 1
+
+kbl(tab11, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T) 
+#%>%
+#  save_kable("../Output/Tablas/atribuciones_tres_años.html")
+
+
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+# Intento de tabla 2
+
+getT1Stat <- function(varname, digits = 0) {
+  getDescriptionStatsBy(proc_cep[, varname],
+    proc_cep$año,
+    add_total_col = TRUE,
+    show_all_values = TRUE,
+    hrzl_prop = TRUE,
+    statistics = FALSE,
+    html = TRUE,
+    digits = digits
+  )
+}
+table_data <- list()
+table_data[["Atribuciones pobreza primera opción"]] <- getT1Stat("at_pobreza1")
+table_data[["Atribuciones pobreza segunda opción"]] <- getT1Stat("at_pobreza2")
+
+rgroup <- c()
+n.rgroup <- c()
+output_data <- NULL
+for (varlabel in names(table_data)) {
+  output_data <- rbind(
+    output_data,
+    table_data[[varlabel]]
+  )
+  rgroup <- c(
+    rgroup,
+    varlabel
+  )
+  n.rgroup <- c(
+    n.rgroup,
+    nrow(table_data[[varlabel]])
+  )
+}
+htmlTable(output_data,
+  align = "rrrr",
+  rgroup = rgroup, n.rgroup = n.rgroup,
+  rgroupCSSseparator = "",
+  rowlabel = "",
+  caption = "Summary Statistics",
+  ctable = TRUE
+)
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+
+# Intento 5 
+## Seguir intentando este para descriptivos generales.
+
+tmpdir <- tempdir()
+
+library(arsenal) 
+table_one <- tableby(año ~ at_pobreza1, data = proc_cep) 
+summary(table_one, title = "Gapminder Data")
+
+mylabels <- list(año = "Año", at_pobreza1 ="Atribuciones pobreza primera mención", at_pobreza2 ="Atribuciones pobreza segunda mención")
+tab1 <- tableby(año ~ at_pobreza1 + at_pobreza2, data=proc_cep,title = "My test table")
+
+write2html(
+  tab1, paste0(tmpdir, "/test_tableby.html"), quiet = TRUE,
+  title = "My test table",      # passed to summary.tableby
+  labelTranslations = mylabels, # passed to summary.tableby
+  total = FALSE                 # passed to summary.tableby
+)
+
+
+```
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+## Forma de importar tabla
+#### No me funcionó: tildes no son leídas
+
+tmp <- URLencode(paste(readLines("../Output/Tablas/at_pobreza_2019.html"), collapse="\n"))
+
+cat('<iframe src="data:text/html;charset=UTF-8,', tmp ,
+    '" style="border: none; seamless:seamless; width: 800px; height: 200px"></iframe>')
+```
+
+
