@@ -1,3 +1,2 @@
-# tesisfacsodown
-Plantilla (template) para escritura y publicación de tesis/seminarios/memorias en FACSO UChile en formato pdf/html vía bookdown  (R)
-[https://juancarloscastillo.github.io/tesisfacsodown/](https://juancarloscastillo.github.io/tesisfacsodown/)
+# Seminario de tesis
+Repositorio que contiene los avances del seminario de tesis de pregrado de la carrera de Sociología de la Universidad de Chile.
