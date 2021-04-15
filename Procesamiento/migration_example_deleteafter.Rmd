@@ -1,0 +1,81 @@
+---
+title: "Untitled"
+author: "Sebastián Cortinez"
+date: "12-04-2021"
+output: html_document
+---
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+migracion <- read.spss("http://www.losmexicanos.unam.mx/migracion/encuesta_nacional/base_datos/Encuesta_Nacional_de_Migracion.sav", 
+                       to.data.frame = TRUE)
+diccionario <- tibble(nombre = names(migracion), 
+                    etiquetas = str_trim(attr(migracion, "variable.labels")))
+migracion <- as.tibble(migracion)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+library(poLCA)
+f <- cbind(p7_1,p7_2,p7_3,p7_4,p7_5,p7_6,p7_7,p7_8,p7_9,p7_10)~1
+
+migracion %>% 
+  dplyr::select(starts_with("p7_")) %>%  
+  poLCA(f, ., nclass = 2, nrep = 4) -> LCA_2clases
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+migracion %>% 
+  dplyr::select(starts_with("p7_")) -> bloque_p7
+lapply(1:9, function(x) {poLCA(f, bloque_p7, nclass = x, nrep = 5)}) -> LCA_1a9
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+map_df(LCA_1a9, glance) %>% 
+  kable(caption = "Comparación de modelos con 1 a nueve clases")
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+map_df(LCA_1a9, glance) %>% 
+  dplyr::select(-df, -df.residual, -chi.squared) %>% 
+  mutate(modelo = as.character(1:nrow(.))) %>%
+  gather(cantidad, valor, -modelo) %>% 
+  ggplot(aes(x= modelo, y = valor, group = 1)) + 
+    geom_line() + 
+    geom_point() + 
+    facet_wrap(~cantidad, scales = "free") +
+    labs(title = "Comparación de modelos para el bloque p7", 
+         subtitle = "La pendiente se aplana a partir de modelos con cinco clases") + 
+    theme_minimal()
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+etiquetas_item <- tibble(outcome = 1:length(levels(migracion$p7_1)), 
+                         etiqueta_item = levels(migracion$p7_1)
+)
+
+LCA_1a9[[5]] %>% 
+  tidy %>% 
+  left_join(dplyr::rename(diccionario, variable = nombre)) %>% 
+  left_join(etiquetas_item) %>% 
+  mutate(etiquetas = str_remove(etiquetas, 
+                                "7 ¿Estaría dispuesto o no estaría dispuesto a permitir que en su casa vivieran personas "), 
+         etiquetas = str_wrap(etiquetas, 30),
+         etiqueta_item = factor(etiqueta_item, 
+                                levels = c("No", "Sí, en parte", "Sí", "NS", "NC")), 
+         class = paste("Clase", class)) %>%
+  ggplot(aes(x = etiquetas, fill = etiqueta_item, y = estimate)) + 
+  geom_col() + 
+  facet_wrap(~class, nrow = 1) + 
+  scale_fill_viridis_d() + 
+  theme_minimal() +
+  theme(legend.position = "bottom") + 
+  labs(fill = "Respuesta", 
+       x = "¿Estaría dispuesto o no estaría dispuesto a
+       permitir que en su casa vivieran personas ", 
+       y = "Probabilidad de respuesta por clase") + 
+  coord_flip()
+```
+

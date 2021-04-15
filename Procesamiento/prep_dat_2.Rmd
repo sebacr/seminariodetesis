@@ -15,6 +15,8 @@ pacman::p_load(dplyr, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,ses
 #devtools::install_github("melff/memisc",subdir="pkg")
 ```
 
+# Cargar base de datos 2000
+
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 cep_2000 <- read_sav("../Input/Data/2000/Encuesta_CEP_2000/Encuesta_CEP_39.sav") #Leer base sav
 
@@ -40,58 +42,16 @@ proc_cep_2000 <- cep_2000 %>% dplyr::select(te2a, # percepcion merit ESFUERZOS
                           te20b, # Att riqueza 2da
                           dat_1,# sexo
                           dat_2, # edad
-                          dat_23, # tramo ingresos hogar
-                          dat_25, # miembros hogar
+                          dat_24, # tramo ingresos sujeto
                           te12, # ESS
                           p7,  # posición politica
                           dat_6) # nivel educacional
 
-sjlabelled::get_label(proc_cep_2000)
+```
 
-#### Percepcion merit ####
+## Codificación variables dependientes (atribuciones de pobreza y riqueza)
 
-## recode 
-frq(proc_cep_2000$te2a)
-frq(proc_cep_2000$te2b)
-
-proc_cep_2000$te2a <- recode(proc_cep_2000$te2a, "c(8,9)=NA")
-proc_cep_2000$te2b <- recode(proc_cep_2000$te2b, "c(8,9)=NA")
-
-## etiquetado
-proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("pem_esfuerzos"=te2a, # percepcion meritocracia esfuerzo
-                                    "pem_inteligencia" =te2b) # percepcion meritocracia inteligencia y capacidades (talento)
-
-get_label(proc_cep_2000$pem_esfuerzos)
-proc_cep_2000$pem_esfuerzos <- set_label(x = proc_cep_2000$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
-
-get_label(proc_cep_2000$pem_inteligencia)
-proc_cep_2000$pem_inteligencia <- set_label(x = proc_cep_2000$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
-
-#### Preferencias merit ####
-
-## recode 
-frq(proc_cep_2000$te15a)
-frq(proc_cep_2000$te15b)
-frq(proc_cep_2000$te15f)
-
-proc_cep_2000$te15a <- recode(proc_cep_2000$te15a, "c(8,9)=NA")
-proc_cep_2000$te15b <- recode(proc_cep_2000$te15b, "c(8,9)=NA")
-proc_cep_2000$te15f <- recode(proc_cep_2000$te15f, "c(8,9)=NA")
-
-## etiquetado
-proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("pref_responsabilidad"=te15a, # preferencia meritocracia responsabildad
-                                    "pref_educacion" =te15b, # preferencia meritocracia años educacion
-                                    "pref_trabajo" =te15f) # preferencia meritocracia trabajo bien realizado
-
-get_label(proc_cep_2000$pref_responsabilidad)
-proc_cep_2000$pref_responsabilidad <- set_label(x = proc_cep_2000$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
-
-get_label(proc_cep_2000$pref_educacion)
-proc_cep_2000$pref_educacion <- set_label(x = proc_cep_2000$pref_educacion,label = "Preferencia meritocracia: educación")
-
-get_label(proc_cep_2000$pref_trabajo)
-proc_cep_2000$pref_trabajo <- set_label(x = proc_cep_2000$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
-
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 #### Atribuciones de pobreza ####
 
@@ -127,11 +87,11 @@ proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 7] = "La falta de generoc
 proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 9] = "Porque los padres también eran pobres"
 proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2000$at_pobreza1[proc_cep_2000$at_pobreza1 == 11] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2000$at_pobreza1 = factor(proc_cep_2000$at_pobreza1,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2000$at_pobreza1)
 
 proc_cep_2000$at_pobreza2<-as.character(proc_cep_2000$at_pobreza2)
@@ -146,10 +106,10 @@ proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 7] = "La falta de generoc
 proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 9] = "Porque los padres también eran pobres"
 proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2000$at_pobreza2[proc_cep_2000$at_pobreza2 == 11] = "NS/NR"
 
 proc_cep_2000$at_pobreza2 = factor(proc_cep_2000$at_pobreza2,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2000$at_pobreza2)
 
 #### Atribuciones de riqueza ####
@@ -187,11 +147,11 @@ proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 8] = "Las ayuda económic
 proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 10] = "Tener una familia unida que apoya"
 proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2000$at_riqueza1[proc_cep_2000$at_riqueza1 == 12] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2000$at_riqueza1 = factor(proc_cep_2000$at_riqueza1,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2000$at_riqueza1)
 
 proc_cep_2000$at_riqueza2<-as.character(proc_cep_2000$at_riqueza2)
@@ -207,11 +167,94 @@ proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 8] = "Las ayuda económic
 proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 10] = "Tener una familia unida que apoya"
 proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2000$at_riqueza2[proc_cep_2000$at_riqueza2 == 12] = "NS/NR"
 proc_cep_2000$at_riqueza2 = factor(proc_cep_2000$at_riqueza2,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2000$at_riqueza2)
 
+```
+
+## Codificación variables independientes
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+#### Percepcion merit ####
+
+## recode 
+frq(proc_cep_2000$te2a)
+frq(proc_cep_2000$te2b)
+
+proc_cep_2000$te2a <- recode(proc_cep_2000$te2a, "c(8,9)=NA")
+proc_cep_2000$te2b <- recode(proc_cep_2000$te2b, "c(8,9)=NA")
+
+proc_cep_2000$te2a <- car::recode(proc_cep_2000$te2a, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2000$te2b <- car::recode(proc_cep_2000$te2b, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2000$te2a<-as.numeric(proc_cep_2000$te2a)
+proc_cep_2000$te2b<-as.numeric(proc_cep_2000$te2b)
+
+## etiquetado
+proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("pem_esfuerzos"=te2a, # percepcion meritocracia esfuerzo
+                                    "pem_inteligencia" =te2b) # percepcion meritocracia inteligencia y capacidades (talento)
+
+### Re etiquetar valores
+
+### proc_cep_2000$pem_esfuerzos <- sjlabelled::set_labels(proc_cep_2000$pem_esfuerzos,
+###            labels=c( "Muy en desacuerdo"=1,"En desacuerdo"=2,"Ni de acuerdo ni en desacuerdo"=3,
+###                      "De acuerdo"=4,"Muy de acuerdo"=5))
+### proc_cep_2000$pem_inteligencia <- sjlabelled::set_labels(proc_cep_2000$pem_inteligencia,
+###            labels=c( "Muy en desacuerdo"=1,"En desacuerdo"=2,"Ni de acuerdo ni en desacuerdo"=3,
+###                      "De acuerdo"=4,"Muy de acuerdo"=5))
+
+get_label(proc_cep_2000$pem_esfuerzos)
+proc_cep_2000$pem_esfuerzos <- set_label(x = proc_cep_2000$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+
+get_label(proc_cep_2000$pem_inteligencia)
+proc_cep_2000$pem_inteligencia <- set_label(x = proc_cep_2000$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+
+#### Preferencias merit ####
+
+## recode 
+frq(proc_cep_2000$te15a)
+frq(proc_cep_2000$te15b)
+frq(proc_cep_2000$te15f)
+
+proc_cep_2000$te15a <- recode(proc_cep_2000$te15a, "c(8,9)=NA")
+proc_cep_2000$te15b <- recode(proc_cep_2000$te15b, "c(8,9)=NA")
+proc_cep_2000$te15f <- recode(proc_cep_2000$te15f, "c(8,9)=NA")
+
+proc_cep_2000$te15a <- car::recode(proc_cep_2000$te15a, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2000$te15b <- car::recode(proc_cep_2000$te15b, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2000$te15f <- car::recode(proc_cep_2000$te15f, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2000$te15a<-as.numeric(proc_cep_2000$te15a)
+proc_cep_2000$te15b<-as.numeric(proc_cep_2000$te15b)
+proc_cep_2000$te15f<-as.numeric(proc_cep_2000$te15f)
+
+## etiquetado
+proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("pref_responsabilidad"=te15a, # preferencia meritocracia responsabildad
+                                    "pref_educacion" =te15b, # preferencia meritocracia años educacion
+                                    "pref_trabajo" =te15f) # preferencia meritocracia trabajo bien realizado
+
+### Re etiquetar valores
+
+### proc_cep_2000$pref_responsabilidad <- sjlabelled::set_labels(proc_cep_2000$pref_responsabilidad,
+###             labels=c( "Sin importancia alguna"=1,"No muy importante"=2,"Bastante importante"=3,
+###                       "Muy importante"=4,"Esencial"=5))
+### proc_cep_2000$pref_educacion <- sjlabelled::set_labels(proc_cep_2000$pref_educacion,
+###             labels=c( "Sin importancia alguna"=1,"No muy importante"=2,"Bastante importante"=3,
+###                       "Muy importante"=4,"Esencial"=5))
+### proc_cep_2000$pref_trabajo <- sjlabelled::set_labels(proc_cep_2000$pref_trabajo,
+###             labels=c( "Sin importancia alguna"=1,"No muy importante"=2,"Bastante importante"=3,
+###                       "Muy importante"=4,"Esencial"=5))
+
+get_label(proc_cep_2000$pref_responsabilidad)
+proc_cep_2000$pref_responsabilidad <- set_label(x = proc_cep_2000$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
+
+get_label(proc_cep_2000$pref_educacion)
+proc_cep_2000$pref_educacion <- set_label(x = proc_cep_2000$pref_educacion,label = "Preferencia meritocracia: educación")
+
+get_label(proc_cep_2000$pref_trabajo)
+proc_cep_2000$pref_trabajo <- set_label(x = proc_cep_2000$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
 
 #### sexo ####
 
@@ -242,26 +285,27 @@ proc_cep_2000$edad <- set_label(x = proc_cep_2000$edad,label = "Edad")
 #### ingreso ####
 
 ## recode
-frq(proc_cep_2000$dat_23)
+frq(proc_cep_2000$dat_24)
 
-proc_cep_2000$dat_23 <- recode(proc_cep_2000$dat_23, "c(88,99)=NA")
+proc_cep_2000$dat_24<-as.numeric(proc_cep_2000$dat_24)
+
+proc_cep_2000$dat_24 <- car::Recode(proc_cep_2000$dat_24, "1:5=1;6:8=2;9=3;10:14=4;19:99=5")
 
 ## etiquetado
-proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("tramo_ingresos"=dat_23) # Ingreso en tramos
+proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("tramo_ingresos"=dat_24) # Ingreso en tramos
+
+proc_cep_2000$tramo_ingresos<-as.factor(proc_cep_2000$tramo_ingresos)
+proc_cep_2000$tramo_ingresos <- sjlabelled::set_labels(proc_cep_2000$tramo_ingresos,
+            labels=c( "Menor al sueldo mínimo"=1,
+                      "210 mil a 390 mil"=2,
+                      "391 mil a 600 mil"=3,
+                      "Más de 601 mil"=4,
+                      "NS/NR"=5))
 
 get_label(proc_cep_2000$tramo_ingresos)
-proc_cep_2000$tramo_ingresos <- set_label(x = proc_cep_2000$tramo_ingresos,label = "Tramo ingresos")
+proc_cep_2000$tramo_ingresos <- set_label(x = proc_cep_2000$tramo_ingresos,label = "Tramo ingresos entrevistado")
 
-#### miembros hogar ####
-
-frq(proc_cep_2000$dat_25)
-
-## etiquetado
-proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("miembros_hogar"=dat_25) # miembros del hogar
-
-get_label(proc_cep_2000$miembros_hogar)
-proc_cep_2000$miembros_hogar <- set_label(x = proc_cep_2000$miembros_hogar,label = "Miembros del hogar")
-
+frq(proc_cep_2000$tramo_ingresos)
 
 #### Estatus Social Subjetivo ####
 
@@ -281,14 +325,13 @@ frq(proc_cep_2000$ESS)
 
 ## recode
 frq(proc_cep_2000$p7)
-proc_cep_2000$p7 <- recode(proc_cep_2000$p7, "c(8,9)=NA")
 
-proc_cep_2000$p7<-car::Recode(proc_cep_2000$p7, "1:2=1;3=2;4:5=3;6:7=4")
+proc_cep_2000$p7<-car::Recode(proc_cep_2000$p7, "1:2=1;3=2;4:5=3;6:9=4")
 
 ## etiquetado
 proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("id_politica"=p7) # Identificacion politica
 
-proc_cep_2000$id_politica <- factor(proc_cep_2000$id_politica, labels=c("Derecha","Centro","Izquierda","Ninguno/Indep"))
+proc_cep_2000$id_politica <- factor(proc_cep_2000$id_politica, labels=c("Derecha","Centro","Izquierda","NS/NR/Ninguno"))
 
 get_label(proc_cep_2000$id_politica)
 proc_cep_2000$id_politica <- set_label(x = proc_cep_2000$id_politica,label = "Identificación política")
@@ -319,32 +362,37 @@ proc_cep_2000 <- proc_cep_2000 %>%
 
 proc_cep_2000 <- proc_cep_2000 %>%
   mutate(año = 2000)
+```
 
+**Descriptivos**
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 # Descriptivos 
-
+sum(is.na(proc_cep_2000))
 stargazer(proc_cep_2000, type="text") ## No hay demasiados NA's
 
 
-install.packages("webshot")
-library(webshot)
 ## Guardar tabla stargazer
 stargazer(proc_cep_2000, type="html",  out = "../Output/Descriptivos_proc_data/descr_tab2000.html")
 webshot("descr_tab2000.html","descr_tab2000.png")
 
 ## Otra tabla de descriptivos
 view(dfSummary(proc_cep_2000, headings=FALSE))
-
+```
+Guardar datos
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 # Guardar bbdd
 
 save(proc_cep_2000,file = "../Input/Data_proc/2000/proc_cep_2000.RData")
 ```
 
+# Cargar base de datos 2009
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 cep_2009 <- sjlabelled::read_spss("../Input/Data/2009/Encuesta_CEP_2009/Encuesta_CEP_59.sav") #Leer base sav
 
-find_var(data = cep_2009,"TE2")
+find_var(data = cep_2009,"tramo")
 
 proc_cep_2009 <- cep_2009 %>% dplyr::select(TE2P11_C, # percepcion merit EDUCACION (talento (inteligencia y capacidad))
                           TE2P11_D, # percepcion merit AMBICION
@@ -358,63 +406,16 @@ proc_cep_2009 <- cep_2009 %>% dplyr::select(TE2P11_C, # percepcion merit EDUCACI
                           TE2P02_2, # Att riqueza 2da
                           DDP01,# sexo
                           DDP02, # edad
-                          DDP34, # tramo ingresos hogar
-                          DDP35, # personas que viven en el hogar
+                          DDP25, # tramo ingresos sujeto
                           TE2P20_A, # ESS
                           MBP16,# posición politica
                           DDP06_ni) # Nivel educacional
 
+```
 
-#### Percepcion merit ####
+## Codificación variables dependientes
 
-## recode 
-frq(proc_cep_2009$TE2P11_C)
-frq(proc_cep_2009$TE2P11_D)
-frq(proc_cep_2009$TE2P11_E)
-
-proc_cep_2009$TE2P11_D <- recode(proc_cep_2009$TE2P11_D, "c(8,9)=NA")
-proc_cep_2009$TE2P11_E <- recode(proc_cep_2009$TE2P11_E, "c(8,9)=NA")
-proc_cep_2009$TE2P11_C <- recode(proc_cep_2009$TE2P11_C, "c(8,9)=NA")
-
-## etiquetado
-proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("pem_esfuerzos"=TE2P11_E, # percepcion meritocracia esfuerzo
-                                          "pem_inteligencia" =TE2P11_C, # percepcion meritocracia inteligencia y capacidades (talento)
-                                          "pem_ambicion" =TE2P11_D) # percepcion meritocracia ambicion
-
-get_label(proc_cep_2009$pem_esfuerzos)
-proc_cep_2009$pem_esfuerzos <- set_label(x = proc_cep_2009$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
-
-get_label(proc_cep_2009$pem_inteligencia)
-proc_cep_2009$pem_inteligencia <- set_label(x = proc_cep_2009$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
-
-get_label(proc_cep_2009$pem_ambicion)
-proc_cep_2009$pem_ambicion <- set_label(x = proc_cep_2009$pem_ambicion,label = "Percepción de mérito: ambición")
-
-#### Preferencias merit ####
-
-## recode 
-frq(proc_cep_2009$TE2P22_A)
-frq(proc_cep_2009$TE2P22_B)
-frq(proc_cep_2009$TE2P22_E)
-
-proc_cep_2009$TE2P22_A <- recode(proc_cep_2009$TE2P22_A, "c(8,9)=NA")
-proc_cep_2009$TE2P22_B <- recode(proc_cep_2009$TE2P22_B, "c(8,9)=NA")
-proc_cep_2009$TE2P22_E <- recode(proc_cep_2009$TE2P22_E, "c(8,9)=NA")
-
-## etiquetado
-proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("pref_responsabilidad"=TE2P22_A, # preferencia meritocracia responsabildad
-                                          "pref_educacion" =TE2P22_B, # preferencia meritocracia años educacion
-                                          "pref_trabajo" =TE2P22_E) # preferencia meritocracia trabajo bien realizado 
-
-get_label(proc_cep_2009$pref_responsabilidad)
-proc_cep_2009$pref_responsabilidad <- set_label(x = proc_cep_2009$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
-
-get_label(proc_cep_2009$pref_educacion)
-proc_cep_2009$pref_educacion <- set_label(x = proc_cep_2009$pref_educacion,label = "Preferencia meritocracia: educación")
-
-get_label(proc_cep_2009$pref_trabajo)
-proc_cep_2009$pref_trabajo <- set_label(x = proc_cep_2009$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
-
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 #### Atribuciones de pobreza ####
 
@@ -449,11 +450,11 @@ proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 7] = "La falta de generoc
 proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 9] = "Porque los padres también eran pobres"
 proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2009$at_pobreza1[proc_cep_2009$at_pobreza1 == 11] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2009$at_pobreza1 = factor(proc_cep_2009$at_pobreza1,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2009$at_pobreza1)
 
 proc_cep_2009$at_pobreza2<-as.character(proc_cep_2009$at_pobreza2)
@@ -468,13 +469,11 @@ proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 7] = "La falta de generoc
 proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 9] = "Porque los padres también eran pobres"
 proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2009$at_pobreza2[proc_cep_2009$at_pobreza2 == 11] = "NS/NR"
 
 proc_cep_2009$at_pobreza2 = factor(proc_cep_2009$at_pobreza2,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2009$at_pobreza2)
-
-
 
 #### Atribuciones de riqueza ####
 
@@ -512,11 +511,11 @@ proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 8] = "Las ayuda económic
 proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 10] = "Tener una familia unida que apoya"
 proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2009$at_riqueza1[proc_cep_2009$at_riqueza1 == 12] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2009$at_riqueza1 = factor(proc_cep_2009$at_riqueza1,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2009$at_riqueza1)
 
 proc_cep_2009$at_riqueza2<-as.character(proc_cep_2009$at_riqueza2)
@@ -532,11 +531,84 @@ proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 8] = "Las ayuda económic
 proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 10] = "Tener una familia unida que apoya"
 proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2009$at_riqueza2[proc_cep_2009$at_riqueza2 == 12] = "NS/NR"
 proc_cep_2009$at_riqueza2 = factor(proc_cep_2009$at_riqueza2,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2009$at_riqueza2)
 
+
+```
+
+## Codificación variables independientes
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+#### Percepcion merit ####
+
+## recode 
+frq(proc_cep_2009$TE2P11_C)
+frq(proc_cep_2009$TE2P11_D)
+frq(proc_cep_2009$TE2P11_E)
+
+proc_cep_2009$TE2P11_D <- recode(proc_cep_2009$TE2P11_D, "c(8,9)=NA")
+proc_cep_2009$TE2P11_E <- recode(proc_cep_2009$TE2P11_E, "c(8,9)=NA")
+proc_cep_2009$TE2P11_C <- recode(proc_cep_2009$TE2P11_C, "c(8,9)=NA")
+
+proc_cep_2009$TE2P11_D <- car::recode(proc_cep_2009$TE2P11_D, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2009$TE2P11_E <- car::recode(proc_cep_2009$TE2P11_E, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2009$TE2P11_C <- car::recode(proc_cep_2009$TE2P11_C, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2009$TE2P11_D<-as.numeric(proc_cep_2009$TE2P11_D)
+proc_cep_2009$TE2P11_E<-as.numeric(proc_cep_2009$TE2P11_E)
+proc_cep_2009$TE2P11_C<-as.numeric(proc_cep_2009$TE2P11_C)
+
+## etiquetado
+proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("pem_esfuerzos"=TE2P11_E, # percepcion meritocracia esfuerzo
+                                          "pem_inteligencia" =TE2P11_C, # percepcion meritocracia inteligencia y capacidades (talento)
+                                          "pem_ambicion" =TE2P11_D) # percepcion meritocracia ambicion
+
+
+get_label(proc_cep_2009$pem_esfuerzos)
+proc_cep_2009$pem_esfuerzos <- set_label(x = proc_cep_2009$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+
+get_label(proc_cep_2009$pem_inteligencia)
+proc_cep_2009$pem_inteligencia <- set_label(x = proc_cep_2009$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+
+get_label(proc_cep_2009$pem_ambicion)
+proc_cep_2009$pem_ambicion <- set_label(x = proc_cep_2009$pem_ambicion,label = "Percepción de mérito: ambición")
+
+#### Preferencias merit ####
+
+## recode 
+frq(proc_cep_2009$TE2P22_A)
+frq(proc_cep_2009$TE2P22_B)
+frq(proc_cep_2009$TE2P22_E)
+
+proc_cep_2009$TE2P22_A <- recode(proc_cep_2009$TE2P22_A, "c(8,9)=NA")
+proc_cep_2009$TE2P22_B <- recode(proc_cep_2009$TE2P22_B, "c(8,9)=NA")
+proc_cep_2009$TE2P22_E <- recode(proc_cep_2009$TE2P22_E, "c(8,9)=NA")
+
+proc_cep_2009$TE2P22_A <- car::recode(proc_cep_2009$TE2P22_A, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2009$TE2P22_B <- car::recode(proc_cep_2009$TE2P22_B, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2009$TE2P22_E <- car::recode(proc_cep_2009$TE2P22_E, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2009$TE2P22_A<-as.numeric(proc_cep_2009$TE2P22_A)
+proc_cep_2009$TE2P22_B<-as.numeric(proc_cep_2009$TE2P22_B)
+proc_cep_2009$TE2P22_E<-as.numeric(proc_cep_2009$TE2P22_E)
+
+## etiquetado
+proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("pref_responsabilidad"=TE2P22_A, # preferencia meritocracia responsabildad
+                                          "pref_educacion" =TE2P22_B, # preferencia meritocracia años educacion
+                                          "pref_trabajo" =TE2P22_E) # preferencia meritocracia trabajo bien realizado 
+
+get_label(proc_cep_2009$pref_responsabilidad)
+proc_cep_2009$pref_responsabilidad <- set_label(x = proc_cep_2009$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
+
+get_label(proc_cep_2009$pref_educacion)
+proc_cep_2009$pref_educacion <- set_label(x = proc_cep_2009$pref_educacion,label = "Preferencia meritocracia: educación")
+
+get_label(proc_cep_2009$pref_trabajo)
+proc_cep_2009$pref_trabajo <- set_label(x = proc_cep_2009$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
 
 #### sexo ####
 
@@ -569,31 +641,27 @@ proc_cep_2009$edad <- set_label(x = proc_cep_2009$edad,label = "Edad")
 #### ingreso ####
 
 ## recode
-frq(proc_cep_2009$DDP34)
+frq(proc_cep_2009$DDP25)
 
-proc_cep_2009$DDP34 <- recode(proc_cep_2009$DDP34, "c(88,99)=NA")
+proc_cep_2009$DDP25<-as.numeric(proc_cep_2009$DDP25)
+
+proc_cep_2009$DDP25 <- car::Recode(proc_cep_2009$DDP25, "1:7=1;8:10=2;11=3;12:14=4;88:99=5")
 
 ## etiquetado
-proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("tramo_ingresos"=DDP34) # Ingreso en tramos
+proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("tramo_ingresos"=DDP25) # Ingreso en tramos
+
+proc_cep_2009$tramo_ingresos<-as.factor(proc_cep_2009$tramo_ingresos)
+proc_cep_2009$tramo_ingresos <- sjlabelled::set_labels(proc_cep_2009$tramo_ingresos,
+            labels=c( "Menor al sueldo mínimo"=1,
+                      "Sueldo mínimo a 448 mil"=2,
+                      "448 mil a 1 millón"=3,
+                      "Más de un millón"=4,
+                      "NS/NR"=5))
 
 get_label(proc_cep_2009$tramo_ingresos)
-proc_cep_2009$tramo_ingresos <- set_label(x = proc_cep_2009$tramo_ingresos,label = "Tramo ingresos")
+proc_cep_2009$tramo_ingresos <- set_label(x = proc_cep_2009$tramo_ingresos,label = "Tramo ingresos entrevistado")
 
-
-#### personas que viven en hogar ####
-
-## recode
-frq(proc_cep_2009$DDP35)
-
-proc_cep_2009$DDP35 <- recode(proc_cep_2009$DDP35, "c(99)=NA")
-
-
-## etiquetado
-proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("miembros_hogar"=DDP35) # Miembros hogar
-
-get_label(proc_cep_2009$miembros_hogar)
-proc_cep_2009$miembros_hogar <- set_label(x = proc_cep_2009$miembros_hogar,label = "Miembros del hogar")
-
+frq(proc_cep_2009$tramo_ingresos)
 
 #### Estatus Social Subjetivo ####
 
@@ -615,14 +683,13 @@ frq(proc_cep_2009$ESS)
 
 ## recode
 frq(proc_cep_2009$MBP16)
-proc_cep_2009$MBP16 <- recode(proc_cep_2009$MBP16, "c(8,9)=NA")
 
-proc_cep_2009$MBP16<-car::Recode(proc_cep_2009$MBP16, "1:2=1;3=2;4:5=3;6:7=4")
+proc_cep_2009$MBP16<-car::Recode(proc_cep_2009$MBP16, "1:2=1;3=2;4:5=3;6:9=4")
 
 ## etiquetado
 proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("id_politica"=MBP16) # Identificacion politica
 
-proc_cep_2009$id_politica <- factor(proc_cep_2009$id_politica, labels=c("Derecha","Centro","Izquierda","Ninguno/Indep"))
+proc_cep_2009$id_politica <- factor(proc_cep_2009$id_politica, labels=c("Derecha","Centro","Izquierda","NS/NR/Ninguno"))
 
 get_label(proc_cep_2009$id_politica)
 proc_cep_2009$id_politica <- set_label(x = proc_cep_2009$id_politica,label = "Identificación política")
@@ -650,6 +717,11 @@ stargazer(proc_cep_2009, type="text")
 # Agregamos la columna "año"
 proc_cep_2009 <- proc_cep_2009 %>%
   mutate(año = 2009)
+```
+
+**Descriptivos** 
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 # Descriptivos 
 
@@ -663,16 +735,20 @@ webshot("descr_tab2009.html","descr_tab2009.png")
 view(dfSummary(proc_cep_2009, headings=FALSE))
 
 # Guardar bbdd
-
+```
+Guardar datos
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 save(proc_cep_2009,file = "../Input/Data_proc/2009/proc_cep_2009.RData")
 ```
+
+# Cargar base de datos 2019
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 
 cep_2019 <- sjlabelled::read_spss("../Input/Data/2019/Encuesta_CEP_2019/Encuesta_CEP_83.sav") #Leer base sav
 
-find_var(data = cep_2019,"educ")
+find_var(data = cep_2019,"viven")
 
 proc_cep_2019 <- cep_2019 %>% dplyr::select(M2_P1_4, # percepcion merit EDUCACION (talento (inteligencia y capacidad))
                                             M2_P1_1, # percepcion merit AMBICION
@@ -686,70 +762,23 @@ proc_cep_2019 <- cep_2019 %>% dplyr::select(M2_P1_4, # percepcion merit EDUCACIO
                                             MB_P19_2, # Att riqueza 2da
                                             DS_P1,# sexo
                                             DS_P2_EXACTA, # edad
-                                            DS_P39, # tramo ingresos hogar
-                                            DS_P34, # personas que viven en el hogar
+                                            DS_P38, # tramo ingresos sujeto
                                             M2_P13A, # ESS
                                             MB_P14,# posición politica
                                             DS_P4) # Nivel educacional
 
-#### Percepcion merit ####
+```
 
-## recode 
-frq(proc_cep_2019$M2_P1_5)
-frq(proc_cep_2019$M2_P1_1)
-frq(proc_cep_2019$M2_P1_4)
+## Codificación variables dependientes
 
-proc_cep_2019$M2_P1_1 <- recode(proc_cep_2019$M2_P1_1, "c(8,9)=NA")
-proc_cep_2019$M2_P1_4 <- recode(proc_cep_2019$M2_P1_4, "c(8,9)=NA")
-proc_cep_2019$M2_P1_5 <- recode(proc_cep_2019$M2_P1_5, "c(8,9)=NA")
-
-## etiquetado
-proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("pem_inteligencia"=M2_P1_4, # percepcion meritocracia esfuerzo
-                                          "pem_esfuerzos" =M2_P1_5, # percepcion meritocracia inteligencia y capacidades (talento)
-                                          "pem_ambicion" =M2_P1_1) # percepcion meritocracia ambicion
-
-get_label(proc_cep_2019$pem_esfuerzos)
-proc_cep_2019$pem_esfuerzos <- set_label(x = proc_cep_2019$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
-
-get_label(proc_cep_2019$pem_inteligencia)
-proc_cep_2019$pem_inteligencia <- set_label(x = proc_cep_2019$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
-
-get_label(proc_cep_2019$pem_ambicion)
-proc_cep_2019$pem_ambicion <- set_label(x = proc_cep_2019$pem_ambicion,label = "Percepción de mérito: ambición")
-
-#### Preferencias merit ####
-
-## recode 
-frq(proc_cep_2019$M2_P14_1)
-frq(proc_cep_2019$M2_P14_2)
-frq(proc_cep_2019$M2_P14_4)
-
-
-proc_cep_2019$M2_P14_1 <- recode(proc_cep_2019$M2_P14_1, "c(8,9)=NA")
-proc_cep_2019$M2_P14_2 <- recode(proc_cep_2019$M2_P14_2, "c(8,9)=NA")
-proc_cep_2019$M2_P14_4 <- recode(proc_cep_2019$M2_P14_4, "c(8,9)=NA")
-
-
-## etiquetado
-proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("pref_responsabilidad"=M2_P14_1, # preferencia meritocracia responsabildad
-                                          "pref_educacion" =M2_P14_2, # preferencia meritocracia años educacion
-                                          "pref_trabajo" =M2_P14_4) # preferencia meritocracia trabajo bien realizado
-
-get_label(proc_cep_2019$pref_responsabilidad)
-proc_cep_2019$pref_responsabilidad <- set_label(x = proc_cep_2019$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
-
-get_label(proc_cep_2019$pref_educacion)
-proc_cep_2019$pref_educacion <- set_label(x = proc_cep_2019$pref_educacion,label = "Preferencia meritocracia: educación")
-
-get_label(proc_cep_2019$pref_trabajo)
-proc_cep_2019$pref_trabajo <- set_label(x = proc_cep_2019$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
-
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
 #### Atribuciones de pobreza ####
 
 ## recode 
 frq(proc_cep_2019$MB_P18_1)
 frq(proc_cep_2019$MB_P18_2)
+proc_cep_2019$MB_P18_2[is.na(proc_cep_2019$MB_P18_2)] <- 88
 
 proc_cep_2019$MB_P18_1 <- car::recode(proc_cep_2019$MB_P18_1,"c(1)=1;c(2)=2;c(3)=3;c(4)=4;c(5)=5;c(6)=6;c(7)=7;c(8)=8;c(9)=9;c(10)=10;c(11,88,99)=11")
 proc_cep_2019$MB_P18_2 <- car::recode(proc_cep_2019$MB_P18_2,"c(1)=1;c(2)=2;c(3)=3;c(4)=4;c(5)=5;c(6)=6;c(7)=7;c(8)=8;c(9)=9;c(10)=10;c(11,88,99)=11")
@@ -776,11 +805,11 @@ proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 7] = "La falta de generoc
 proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 9] = "Porque los padres también eran pobres"
 proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2019$at_pobreza1[proc_cep_2019$at_pobreza1 == 11] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2019$at_pobreza1 = factor(proc_cep_2019$at_pobreza1,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2019$at_pobreza1)
 
 proc_cep_2019$at_pobreza2<-as.character(proc_cep_2019$at_pobreza2)
@@ -795,10 +824,10 @@ proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 7] = "La falta de generoc
 proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 8] = "Las pocas oportunidades de empleo"
 proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 9] = "Porque los padres también eran pobres"
 proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 10] = "Los abusos o injusticias del sistema económico"
-proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 11] = "Otros/No sabe/ No contesta"
+proc_cep_2019$at_pobreza2[proc_cep_2019$at_pobreza2 == 11] = "NS/NR"
 
 proc_cep_2019$at_pobreza2 = factor(proc_cep_2019$at_pobreza2,
-                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","Otros/No sabe/ No contesta"))
+                    levels=c("La mala suerte", "La flojera y falta de iniciativa", "La falta de educación","La falta de ayuda económica del gobierno","Los vicios y el alcoholismo","Las malas políticas econ. del gobierno","La falta de generocidad de los que tienen más","Las pocas oportunidades de empleo","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico","NS/NR"))
 frq(proc_cep_2019$at_pobreza2)
 
 
@@ -807,7 +836,7 @@ frq(proc_cep_2019$at_pobreza2)
 ## recode 
 frq(proc_cep_2019$MB_P19_1)
 frq(proc_cep_2019$MB_P19_2)
-
+proc_cep_2019$MB_P19_2[is.na(proc_cep_2019$MB_P19_2)] <- 88
 
 proc_cep_2019$MB_P19_1 <- car::recode(proc_cep_2019$MB_P19_1,"c(1)=1;c(2)=2;c(3)=3;c(4)=4;c(5)=5;c(6)=6;c(7)=7;c(8)=8;c(9)=9;c(10)=10;c(11)=11;c(12,88,99)=12")
 proc_cep_2019$MB_P19_2 <- car::recode(proc_cep_2019$MB_P19_2,"c(1)=1;c(2)=2;c(3)=3;c(4)=4;c(5)=5;c(6)=6;c(7)=7;c(8)=8;c(9)=9;c(10)=10;c(11)=11;c(12,88,99)=12")
@@ -837,11 +866,11 @@ proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 8] = "Las ayuda económic
 proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 10] = "Tener una familia unida que apoya"
 proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2019$at_riqueza1[proc_cep_2019$at_riqueza1 == 12] = "NS/NR"
 
 # si se quiere ordenar: 
 proc_cep_2019$at_riqueza1 = factor(proc_cep_2019$at_riqueza1,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2019$at_riqueza1)
 
 proc_cep_2019$at_riqueza2<-as.character(proc_cep_2019$at_riqueza2)
@@ -857,10 +886,82 @@ proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 8] = "Las ayuda económic
 proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 9] = "Las políticas económicas del gobierno"
 proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 10] = "Tener una familia unida que apoya"
 proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 11] = "Haciendo dinero a la mala, con manejos deshonestos"
-proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 12] = "Otros/No sabe/ No contesta"
+proc_cep_2019$at_riqueza2[proc_cep_2019$at_riqueza2 == 12] = "NS/NR"
 proc_cep_2019$at_riqueza2 = factor(proc_cep_2019$at_riqueza2,
-                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","Otros/No sabe/ No contesta"))
+                    levels=c( "La iniciativa personal","La suerte","La fe en dios","El trabajo responsable","Los contactos o 'pitutos' (parientes, amigos)","El nivel educacional alcanzado","La situación económica de los padres","Las ayuda económica del Estado","Las políticas económicas del gobierno","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","NS/NR"))
 frq(proc_cep_2019$at_riqueza2)
+
+```
+
+## Codificación variables independientes
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+#### Percepcion merit ####
+
+## recode 
+frq(proc_cep_2019$M2_P1_5)
+frq(proc_cep_2019$M2_P1_1)
+frq(proc_cep_2019$M2_P1_4)
+
+proc_cep_2019$M2_P1_1 <- recode(proc_cep_2019$M2_P1_1, "c(8,9)=NA")
+proc_cep_2019$M2_P1_4 <- recode(proc_cep_2019$M2_P1_4, "c(8,9)=NA")
+proc_cep_2019$M2_P1_5 <- recode(proc_cep_2019$M2_P1_5, "c(8,9)=NA")
+
+proc_cep_2019$M2_P1_1 <- car::recode(proc_cep_2019$M2_P1_1, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2019$M2_P1_4 <- car::recode(proc_cep_2019$M2_P1_4, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2019$M2_P1_5 <- car::recode(proc_cep_2019$M2_P1_5, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2019$M2_P1_1<-as.numeric(proc_cep_2019$M2_P1_1)
+proc_cep_2019$M2_P1_4<-as.numeric(proc_cep_2019$M2_P1_4)
+proc_cep_2019$M2_P1_5<-as.numeric(proc_cep_2019$M2_P1_5)
+
+## etiquetado
+proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("pem_inteligencia"=M2_P1_4, # percepcion meritocracia esfuerzo
+                                          "pem_esfuerzos" =M2_P1_5, # percepcion meritocracia inteligencia y capacidades (talento)
+                                          "pem_ambicion" =M2_P1_1) # percepcion meritocracia ambicion
+
+get_label(proc_cep_2019$pem_esfuerzos)
+proc_cep_2019$pem_esfuerzos <- set_label(x = proc_cep_2019$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+
+get_label(proc_cep_2019$pem_inteligencia)
+proc_cep_2019$pem_inteligencia <- set_label(x = proc_cep_2019$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+
+get_label(proc_cep_2019$pem_ambicion)
+proc_cep_2019$pem_ambicion <- set_label(x = proc_cep_2019$pem_ambicion,label = "Percepción de mérito: ambición")
+
+#### Preferencias merit ####
+
+## recode 
+frq(proc_cep_2019$M2_P14_1)
+frq(proc_cep_2019$M2_P14_2)
+frq(proc_cep_2019$M2_P14_4)
+
+
+proc_cep_2019$M2_P14_1 <- recode(proc_cep_2019$M2_P14_1, "c(8,9)=NA")
+proc_cep_2019$M2_P14_2 <- recode(proc_cep_2019$M2_P14_2, "c(8,9)=NA")
+proc_cep_2019$M2_P14_4 <- recode(proc_cep_2019$M2_P14_4, "c(8,9)=NA")
+
+proc_cep_2019$M2_P14_1 <- car::recode(proc_cep_2019$M2_P14_1, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2019$M2_P14_2 <- car::recode(proc_cep_2019$M2_P14_2, "1=5;2=4;3=3;4=2;5=1")
+proc_cep_2019$M2_P14_4 <- car::recode(proc_cep_2019$M2_P14_4, "1=5;2=4;3=3;4=2;5=1")
+
+proc_cep_2019$M2_P14_1<-as.numeric(proc_cep_2019$M2_P14_1)
+proc_cep_2019$M2_P14_2<-as.numeric(proc_cep_2019$M2_P14_2)
+proc_cep_2019$M2_P14_4<-as.numeric(proc_cep_2019$M2_P14_4)
+
+## etiquetado
+proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("pref_responsabilidad"=M2_P14_1, # preferencia meritocracia responsabildad
+                                          "pref_educacion" =M2_P14_2, # preferencia meritocracia años educacion
+                                          "pref_trabajo" =M2_P14_4) # preferencia meritocracia trabajo bien realizado
+
+get_label(proc_cep_2019$pref_responsabilidad)
+proc_cep_2019$pref_responsabilidad <- set_label(x = proc_cep_2019$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
+
+get_label(proc_cep_2019$pref_educacion)
+proc_cep_2019$pref_educacion <- set_label(x = proc_cep_2019$pref_educacion,label = "Preferencia meritocracia: educación")
+
+get_label(proc_cep_2019$pref_trabajo)
+proc_cep_2019$pref_trabajo <- set_label(x = proc_cep_2019$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
 
 #### sexo ####
 
@@ -889,33 +990,33 @@ get_label(proc_cep_2019$edad)
 
 proc_cep_2019$edad <- set_label(x = proc_cep_2019$edad,label = "Edad")
 
+
 #### ingreso ####
 
 ## recode
-frq(proc_cep_2019$DS_P39)
+frq(proc_cep_2019$DS_P38)
 
-proc_cep_2019$DS_P39 <- recode(proc_cep_2019$DS_P39, "c(88,99)=NA")
+proc_cep_2019$DS_P38<-as.numeric(proc_cep_2019$DS_P38)
+
+proc_cep_2019$DS_P38 <- car::Recode(proc_cep_2019$DS_P38, "1:7=1;8:10=2;11=3;12:14=4;88:99=5")
+
+#proc_cep_2019$DS_P38 <- recode(proc_cep_2019$DS_P38, "c(88,99)=NA")
 
 ## etiquetado
-proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("tramo_ingresos"=DS_P39) # Ingreso en tramos
+proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("tramo_ingresos"=DS_P38) # Ingreso en tramos
+
+proc_cep_2019$tramo_ingresos<-as.factor(proc_cep_2019$tramo_ingresos)
+proc_cep_2019$tramo_ingresos <- sjlabelled::set_labels(proc_cep_2019$tramo_ingresos,
+            labels=c( "Menor al sueldo mínimo"=1,
+                      "Sueldo mínimo a 448 mil"=2,
+                      "448 mil a 1 millón"=3,
+                      "Más de un millón"=4,
+                      "NS/NR"=5))
 
 get_label(proc_cep_2019$tramo_ingresos)
-proc_cep_2019$tramo_ingresos <- set_label(x = proc_cep_2019$tramo_ingresos,label = "Tramo ingresos")
+proc_cep_2019$tramo_ingresos <- set_label(x = proc_cep_2019$tramo_ingresos,label = "Tramo ingresos entrevistado")
 
-
-#### personas que viven en hogar ####
-
-## recode
-frq(proc_cep_2019$DS_P34)
-
-
-
-## etiquetado
-proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("miembros_hogar"=DS_P34) # Miembros hogar
-
-get_label(proc_cep_2019$miembros_hogar)
-proc_cep_2019$miembros_hogar <- set_label(x = proc_cep_2019$miembros_hogar,label = "Miembros del hogar")
-
+frq(proc_cep_2019$tramo_ingresos)
 
 #### Estatus Social Subjetivo ####
 
@@ -937,14 +1038,13 @@ frq(proc_cep_2019$ESS)
 
 ## recode
 frq(proc_cep_2019$MB_P14)
-proc_cep_2019$MB_P14 <- recode(proc_cep_2019$MB_P14, "c(8,9)=NA")
 
-proc_cep_2019$MB_P14<-car::Recode(proc_cep_2019$MB_P14, "1:2=1;3=2;4:5=3;6:7=4")
+proc_cep_2019$MB_P14<-car::Recode(proc_cep_2019$MB_P14, "1:2=1;3=2;4:5=3;6:9=4")
 
 ## etiquetado
 proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("id_politica"=MB_P14) # Identificacion politica
 
-proc_cep_2019$id_politica <- factor(proc_cep_2019$id_politica, labels=c("Derecha","Centro","Izquierda","Ninguno/Indep"))
+proc_cep_2019$id_politica <- factor(proc_cep_2019$id_politica, labels=c("Derecha","Centro","Izquierda","NS/NR/Ninguno"))
 
 get_label(proc_cep_2019$id_politica)
 proc_cep_2019$id_politica <- set_label(x = proc_cep_2019$id_politica,label = "Identificación política")
@@ -972,7 +1072,11 @@ stargazer(proc_cep_2019, type="text")
 # Agregamos la columna "año"
 proc_cep_2019 <- proc_cep_2019 %>%
   mutate(año = 2019)
+```
 
+**Descriptivos** 
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 # Descriptivos 
 
 stargazer(proc_cep_2019, type="text") ## No hay demasiados NA's
@@ -983,17 +1087,195 @@ webshot("descr_tab2019.html","descr_tab2019.png")
 
 ## Otra tabla de descriptivos
 view(dfSummary(proc_cep_2019, headings=FALSE))
-
-# Guardar bbdd
-
-save(proc_cep_2019,file = "../Input/Data_proc/2019/proc_cep_2019.RData")
 ```
 
+## Nueva base de datos para análisis del primer objetivo (2019)
+
+### Atribuciones dicotomizadas
+
+Para el año 2019 se dicotomizan las atribuciones en internas/externas, para posteriormente hacer un analisis de clases latentes (LCA)
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
+
+proc_data_2019<-data.table(proc_cep_2019)
+
+
+frq(proc_data_2019$at_pobreza1)
+proc_data_2019[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
+               base::ifelse(at_pobreza1 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+proc_data_2019[, Att_p2 := ifelse(at_pobreza2 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
+               ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+frq(proc_cep_2019$at_riqueza1)
+proc_data_2019[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data_2019[, Att_r2 := ifelse(at_riqueza2 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza2 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data_2019<-as.data.frame(proc_data_2019)
+
+# Ponemos las etiquetas que faltan
+
+proc_data_2019$ESS <- set_label(x = proc_data_2019$ESS,label = "Estatus social subjetivo")
+proc_data_2019$id_politica <- set_label(x = proc_data_2019$id_politica,label = "Identificacion politica")
+proc_data_2019$nivel_educ <- set_label(x = proc_data_2019$nivel_educ,label = "Nivel educacional")
+proc_data_2019$pem_ambicion <- set_label(x = proc_data_2019$pem_ambicion,label = "Percepcion meritocratica ambicion")
+proc_data_2019$Att_p1 <- set_label(x = proc_data_2019$Att_p1,label = "Atribucion pob int/ex primera mención")
+proc_data_2019$Att_p2 <- set_label(x = proc_data_2019$Att_p2,label = "Atribucion pob int/ex segunda mención")
+proc_data_2019$Att_r1 <- set_label(x = proc_data_2019$Att_r1,label = "Atribucion riq int/ex primera mención")
+proc_data_2019$Att_r2 <- set_label(x = proc_data_2019$Att_r2,label = "Atribucion riq int/ex segunda mención")
+proc_data_2019$año <- set_label(x = proc_data_2019$año,label = "Año")
+
+sum(is.na(proc_data_2019$Att_r2))
+#proc_data_2019[is.na(proc_data_2019)] <- 0
+```
+
+### Generar variable de atribuciones con tres valores: internas, externas y ambivalentes
+
+Generar variable de atribuciones a partir de las clases latentes de la investigación de Frei et al.
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+## Sacar NA en nueva bbdd
+
+proc_data_2019 <- na.omit(proc_data_2019) 
+
+## Nueva variable con 3 clases latentes. 
+
+## PRECAUCION: esto es por mientras. Para hacer analisis de clases latentes se recomienda "latent class regression model". Reisar texto de Linzer y Lewis sobre poLCA
+
+### Variable que toma tanto at. de pobreza como de riqueza
+
+proc_data_2019<-proc_data_2019 %>% mutate(attclass =
+                     case_when(Att_p1 == "atribucion interna" & 
+           Att_p2 == "atribucion interna" &
+           Att_r1 == "atribucion interna" &
+           Att_r2 == "atribucion interna" ~ "interna", 
+                               Att_p1 == "atribucion externa" & 
+           Att_p2 == "atribucion externa" &
+           Att_r1 == "atribucion externa" &
+           Att_r2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+
+### Ahora se generan dos variables por separado para at. de pobreza y de riqueza
+
+proc_data_2019<-proc_data_2019 %>% mutate(pob_attclass =
+                     case_when(Att_p1 == "atribucion interna" & 
+           Att_p2 == "atribucion interna" ~ "interna", 
+                               Att_p1 == "atribucion externa" & 
+           Att_p2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+
+proc_data_2019<-proc_data_2019 %>% mutate(riq_attclass =
+                     case_when(Att_r1 == "atribucion interna" & 
+           Att_r2 == "atribucion interna" ~ "interna", 
+                               Att_r1 == "atribucion externa" & 
+           Att_r2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+
+#proc_data$Att_p1[proc_data$Att_p1 == "atribucion interna"] <- 1
+#proc_data$Att_p1[proc_data$Att_p1 == "atribucion externa"] <- 2
+
+#proc_data$Att_p2[proc_data$Att_p2 == "atribucion interna"] <- 1
+#proc_data$Att_p2[proc_data$Att_p2 == "atribucion externa"] <- 2
+
+#proc_data$Att_r1[proc_data$Att_r1 == "atribucion interna"] <- 1
+#proc_data$Att_r1[proc_data$Att_r1 == "atribucion externa"] <- 2
+
+#proc_data$Att_r2[proc_data$Att_r2 == "atribucion interna"] <- 1
+#proc_data$Att_r2[proc_data$Att_r2 == "atribucion externa"] <- 2
+
+# Ahora clasificamos. Si es 4 o menos = int, si es 
+
+```
+
+### Ajustes en variables de meritocracia
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Percepciones
+
+proc_data_2019$pmerit <- (proc_data_2019$pem_inteligencia+proc_data_2019$pem_ambicion+proc_data_2019$pem_esfuerzos)/3
+
+proc_data_2019$pmerit  <- set_label(x = proc_data_2019$pmerit, label = "Percepción meritocracia promedio")
+
+data_percepcion<-proc_data_2019 %>% dplyr::select(pem_ambicion,pem_inteligencia,pem_esfuerzos)
+
+# Preferencias
+
+proc_data_2019$prefmerit <- (proc_data_2019$pref_responsabilidad+proc_data_2019$pref_educacion+proc_data_2019$pref_trabajo)/3
+
+proc_data_2019$prefmerit  <- set_label(x = proc_data_2019$prefmerit, label = "Preferencia meritocracia promedio")
+
+data_preferencia<-proc_data_2019 %>% dplyr::select(pref_responsabilidad,pref_educacion,pref_trabajo)
+```
+
+Guardar bases de datos
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Guardar bbdd
+
+###sum(is.na(proc_data_2019))
+
+save(data_percepcion,file = "../Input/Data_proc/2019/data_percepcion.RData")
+save(data_preferencia,file = "../Input/Data_proc/2019/data_preferencia.RData")
+save(proc_cep_2019,file = "../Input/Data_proc/2019/proc_cep_2019.RData")
+save(proc_data_2019,file = "../Input/Data_proc/2019/proc_data_2019.RData")
+```
+
+# Unir bases de datos y ajustes finales a la base de datos procesada (2000, 2009 y 2019)
+
+## Agregar variables de atribuciones dicotomizadas para bbdd de los tres años
+  
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+# Unimos bases de datos
+proc_cep <- rbind(proc_cep_2000,proc_cep_2009,proc_cep_2019)
+
+# Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
+
+proc_data<-data.table(proc_cep)
+
+frq(proc_cep$at_pobreza1)
+proc_data[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
+               base::ifelse(at_pobreza1 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+proc_data[, Att_p2 := ifelse(at_pobreza2 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
+               ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+frq(proc_cep$at_riqueza1)
+proc_data[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data[, Att_r2 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+proc_data<-as.data.frame(proc_data)
+
+# Ponemos las etiquetas que faltan
+
+proc_data$ESS <- set_label(x = proc_data$ESS,label = "Estatus social subjetivo")
+proc_data$id_politica <- set_label(x = proc_data$id_politica,label = "Identificacion politica")
+proc_data$nivel_educ <- set_label(x = proc_data$nivel_educ,label = "Nivel educacional")
+proc_data$pem_ambicion <- set_label(x = proc_data$pem_ambicion,label = "Percepcion meritocratica ambicion")
+proc_data$Att_p1 <- set_label(x = proc_data$Att_p1,label = "Atribucion pob int/ex primera mención")
+proc_data$Att_p2 <- set_label(x = proc_data$Att_p2,label = "Atribucion pob int/ex segunda mención")
+proc_data$Att_r1 <- set_label(x = proc_data$Att_r1,label = "Atribucion riq int/ex primera mención")
+proc_data$Att_r2 <- set_label(x = proc_data$Att_r2,label = "Atribucion riq int/ex segunda mención")
+proc_data$año <- set_label(x = proc_data$año,label = "Año")
+
+
+#proc_data[is.na(proc_data)] <- 0
+```
+
+## Guardar bbdd
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 ## unir bases de datos
 
-proc_cep <- rbind(proc_cep_2000,proc_cep_2009,proc_cep_2019)
-
 save(proc_cep,file = "../Input/Data_proc/proc_cep.RData")
+save(proc_data,file = "../Input/Data_proc/proc_data.RData")
 ```

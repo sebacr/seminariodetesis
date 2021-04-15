@@ -27,14 +27,8 @@ if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,forei
 #  Cargar bbdd
 
 load("../Input/Data_proc/proc_cep.RData")
-
-load("../Input/Data_proc/2019/proc_cep_2019.RData")
+load("../Input/Data_proc/proc_data.RData")
 ```
-
-# Análisis datos 2019
-
-Descriptivos generales variables 2019
-
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 proc_cep$at_pobreza1<-haven::as_factor(proc_cep$at_pobreza1)
@@ -45,60 +39,9 @@ proc_cep$año<-haven::as_factor(proc_cep$año)
 proc_cep$sexo<-haven::as_factor(proc_cep$sexo)
 proc_cep$id_politica<-haven::as_factor(proc_cep$id_politica)
 
-proc_cep_2019$at_pobreza1<-haven::as_factor(proc_cep_2019$at_pobreza1)
-proc_cep_2019$at_pobreza2<-haven::as_factor(proc_cep_2019$at_pobreza2)
-proc_cep_2019$at_riqueza1<-haven::as_factor(proc_cep_2019$at_riqueza1)
-proc_cep_2019$at_riqueza2<-haven::as_factor(proc_cep_2019$at_riqueza2)
-proc_cep_2019$año<-haven::as_factor(proc_cep_2019$año)
-proc_cep_2019$sexo<-haven::as_factor(proc_cep_2019$sexo)
-proc_cep_2019$id_politica<-haven::as_factor(proc_cep_2019$id_politica)
-
-```
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-# Descriptivos 2019
-kable(papeR::summarize(proc_cep_2019, type = "numeric"),variable.labels = TRUE)
-kable(papeR::summarize(proc_cep_2019, type = "factor", cumulative = TRUE))
 ```
 
 Análisis clases latentes
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-# Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
-
-proc_data<-data.table(proc_cep)
-
-frq(proc_cep$at_pobreza1)
-proc_data[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
-               base::ifelse(at_pobreza1 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
-
-proc_data[, Att_p2 := ifelse(at_pobreza2 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
-               ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
-
-frq(proc_cep$at_riqueza1)
-proc_data[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
-               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
-
-proc_data[, Att_r2 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
-               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
-
-proc_data<-as.data.frame(proc_data)
-
-# Ponemos las etiquetas que faltan
-
-proc_data$ESS <- set_label(x = proc_data$ESS,label = "Estatus social subjetivo")
-proc_data$id_politica <- set_label(x = proc_data$id_politica,label = "Identificacion politica")
-proc_data$nivel_educ <- set_label(x = proc_data$nivel_educ,label = "Nivel educacional")
-proc_data$pem_ambicion <- set_label(x = proc_data$pem_ambicion,label = "Percepcion meritocratica ambicion")
-proc_data$Att_p1 <- set_label(x = proc_data$Att_p1,label = "Atribucion pob int/ex primera mención")
-proc_data$Att_p2 <- set_label(x = proc_data$Att_p2,label = "Atribucion pob int/ex segunda mención")
-proc_data$Att_r1 <- set_label(x = proc_data$Att_r1,label = "Atribucion riq int/ex primera mención")
-proc_data$Att_r2 <- set_label(x = proc_data$Att_r2,label = "Atribucion riq int/ex segunda mención")
-proc_data$año <- set_label(x = proc_data$año,label = "Año")
-
-
-#proc_data[is.na(proc_data)] <- 0
-```
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 # Al parecer hay que convertir atribuciones a numerico. 

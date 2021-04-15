@@ -1,0 +1,305 @@
+---
+title: "analisis datos 2019"
+author: "Sebastián Cortinez"
+date: "12-04-2021"
+output: html_document
+---
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+options(scipen=999) # valores sin notación científica
+#install.packages("pacman")
+library(pacman)
+#detach("package:memisc", unload = TRUE)
+#install.packages("devtools")
+if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
+if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
+if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
+#webshot::install_phantomjs()
+
+#  Cargar bbdd
+
+load("../Input/Data_proc/2019/data_percepcion.RData")
+load("../Input/Data_proc/2019/data_preferencia.RData")
+load("../Input/Data_proc/2019/proc_cep_2019.RData")
+load("../Input/Data_proc/2019/proc_data_2019.RData")
+
+#proc_data_2019 %>% replace_na(list(pref_trabajo = "NS/NR", id_politica = "NS/NR"))
+#sum(is.na(proc_data_2019))
+#proc_data_2019[is.na(proc_data_2019)] <- "NS/NR"
+```
+
+# Análisis datos 2019
+
+Descriptivos generales variables 2019
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_cep_2019$at_pobreza1<-haven::as_factor(proc_cep_2019$at_pobreza1)
+proc_cep_2019$at_pobreza2<-haven::as_factor(proc_cep_2019$at_pobreza2)
+proc_cep_2019$at_riqueza1<-haven::as_factor(proc_cep_2019$at_riqueza1)
+proc_cep_2019$at_riqueza2<-haven::as_factor(proc_cep_2019$at_riqueza2)
+proc_cep_2019$año<-haven::as_factor(proc_cep_2019$año)
+proc_cep_2019$sexo<-haven::as_factor(proc_cep_2019$sexo)
+proc_cep_2019$id_politica<-haven::as_factor(proc_cep_2019$id_politica)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+# Descriptivos 2019
+kable(papeR::summarize(proc_cep_2019, type = "numeric"),variable.labels = TRUE)
+kable(papeR::summarize(proc_cep_2019, type = "factor", cumulative = TRUE))
+```
+
+Tabla descriptiva atribuciones de pobreza y riqueza
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+# Falta mejorar visualización de tabla
+
+furniture::table1(proc_cep_2019,
+  "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab1
+
+kbl(tab1, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 1),bold = T) 
+#%>%
+#  save_kable("../Output/Tablas/at_pobreza_2019.html")
+
+```
+
+
+Tabla de correlación entre percepciones de meritocracia 
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+tab_corr(data_percepcion,
+         triangle = "lower",
+         encoding = "Windows-1252") 
+```
+
+Tabla de correlación entre preferencias de meritocracia 
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+tab_corr(data_preferencia,
+         triangle = "lower",
+         encoding = "Windows-1252") 
+```
+
+Tabla de promedios entre percepción de meritocracia y atribuciones
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+  proc_data_2019 %>% # se especifica la base de datos
+  dplyr::select(pmerit,attclass) %>% # se seleccionan las variables
+  dplyr::group_by(Atribuciones=sjlabelled::as_label(attclass)) %>% # se agrupan por la variable categórica y se usan sus etiquetas con as_label
+  dplyr::summarise(Obs.=n(),Promedio=mean(pmerit),SD=sd(pmerit)) %>% # se agregan las operaciones a presentar en la tabla
+  kable(, format = "markdown") # se genera la tabla
+
+```
+
+Tabla de promedios entre percepción de meritocracia y atribuciones
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+  proc_data_2019 %>% # se especifica la base de datos
+  dplyr::select(prefmerit,attclass) %>% # se seleccionan las variables
+  dplyr::group_by(Atribuciones=sjlabelled::as_label(attclass)) %>% # se agrupan por la variable categórica y se usan sus etiquetas con as_label
+  dplyr::summarise(Obs.=n(),Promedio=mean(prefmerit),SD=sd(prefmerit)) %>% # se agregan las operaciones a presentar en la tabla
+  kable(, format = "markdown") # se genera la tabla
+
+
+view_df(proc_data_2019,encoding = "")
+```
+
+Tabla atribuciones de pobreza 2019
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+sjt.xtab(proc_data_2019$pmerit, proc_data_2019$attclass,
+        show.col.prc=TRUE,
+        show.summary=FALSE
+)
+```
+
+# Regresiones con attclass (preclasificación para at. de pobreza junto a at. de riqueza)
+
+## Regresión logística ordinal
+
+Primero se intentará modelar una regresión en donde la dependiente attclass es ordinal, en donde el mayor valor es "interna", el menor "externa", y el medio "ambivalente"
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_data_2019$attclass <- factor(proc_data_2019$attclass)
+proc_data_2019$attclass = factor(proc_data_2019$attclass,
+                    levels=c("externa","ambivalente","interna"))
+proc_data_2019$sexo <- factor(proc_data_2019$sexo)
+
+# Run the ordinal logistic regression model
+model1 <- polr(attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+model2 <- polr(attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model1)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model2)
+```
+
+## Regresión multinomial
+
+A contiuación se introducirá la variable dependiente attclass como nominal, y las independientes, por el momento, serán: pem, pref, ESS, edad, sexo, id politica y nivel educ
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+str(proc_data_2019$sexo)
+proc_data_2019$attclass <- factor(proc_data_2019$attclass)
+proc_data_2019$sexo <- factor(proc_data_2019$sexo)
+
+# Set the reference group for attclass to be 1
+proc_data_2019$attclass <- relevel(
+proc_data_2019$attclass, ref=3)
+
+summary(proc_data_2019)
+# Run the model
+model3 <- multinom(attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model3)
+```
+
+# Regresiones con at. de pobreza y riqueza separadas (preclasificación estilo Bucca(2016))
+
+## Regresión logística ordinal
+
+### Atribuciones de pobreza
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+frq(proc_data_2019$pob_attclass)
+proc_data_2019$pob_attclass <- factor(proc_data_2019$pob_attclass)
+proc_data_2019$pob_attclass = factor(proc_data_2019$pob_attclass,
+                    levels=c("externa","ambivalente","interna"))
+proc_data_2019$sexo <- factor(proc_data_2019$sexo)
+
+# Run the ordinal logistic regression model
+model4 <- polr(pob_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+model5 <- polr(pob_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model4)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model5)
+```
+
+### Atribuciones de riqueza
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+frq(proc_data_2019$riq_attclass)
+proc_data_2019$riq_attclass <- factor(proc_data_2019$riq_attclass)
+proc_data_2019$riq_attclass = factor(proc_data_2019$riq_attclass,
+                    levels=c("externa","ambivalente","interna"))
+proc_data_2019$sexo <- factor(proc_data_2019$sexo)
+
+# Run the ordinal logistic regression model
+model6 <- polr(riq_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+model7 <- polr(riq_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model6)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model7)
+```
+
+## Regresión multinomial
+
+### Atribuciones de pobreza
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_data_2019$pob_attclass<-factor(proc_data_2019$pob_attclass)
+proc_data_2019$pob_attclass = factor(proc_data_2019$pob_attclass,
+                    levels=c("externa","ambivalente","interna"))
+frq(proc_data_2019$pob_attclass)
+
+# Set the reference group for pob_attclass to be 1
+proc_data_2019$pob_attclass <- relevel(
+proc_data_2019$pob_attclass, ref=3)
+
+summary(proc_data_2019)
+# Run the model
+model8 <- multinom(pob_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+model9 <- multinom(pob_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model8)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model9)
+```
+
+Guardar tablas
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model8, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_pob_mean.html")
+webshot("multireg_pob_mean.html")
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model9, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_pob_sep.html")
+webshot("multireg_pob_sep.html")
+```
+
+### Atribuciones de riqueza
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_data_2019$riq_attclass<-factor(proc_data_2019$riq_attclass)
+proc_data_2019$riq_attclass = factor(proc_data_2019$riq_attclass,
+                    levels=c("externa","ambivalente","interna"))
+frq(proc_data_2019$riq_attclass)
+
+# Set the reference group for riq_attclass to be 1
+proc_data_2019$riq_attclass <- relevel(
+proc_data_2019$riq_attclass, ref=3)
+
+summary(proc_data_2019)
+# Run the model
+model10 <- multinom(riq_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=proc_data_2019)
+model11 <- multinom(riq_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data_2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model10)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model11)
+```
+
+Guardar tablas
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model10, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_riq_mean.html")
+webshot("multireg_riq_mean.html")
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model11, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_riq_sep.html")
+webshot("multireg_riq_sep.html")
+```

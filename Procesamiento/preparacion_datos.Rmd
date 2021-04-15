@@ -450,7 +450,7 @@ get_label(proc_cep_2009$tramo_ingresos)
 proc_cep_2009$tramo_ingresos <- set_label(x = proc_cep_2009$tramo_ingresos,label = "Tramo ingresos")
 
 
-#### personas que viven en hogar ####
+#### miembros del hogar ####
 
 ## recode
 frq(proc_cep_2009$DDP35)
@@ -710,7 +710,7 @@ get_label(proc_cep_2019$tramo_ingresos)
 proc_cep_2019$tramo_ingresos <- set_label(x = proc_cep_2019$tramo_ingresos,label = "Tramo ingresos")
 
 
-#### personas que viven en hogar ####
+#### miembros del hogar ####
 
 ## recode
 frq(proc_cep_2019$DS_P34)
