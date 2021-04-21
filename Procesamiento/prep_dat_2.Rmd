@@ -1133,67 +1133,6 @@ sum(is.na(proc_data_2019$Att_r2))
 #proc_data_2019[is.na(proc_data_2019)] <- 0
 ```
 
-### Generar variable de atribuciones con tres valores: internas, externas y ambivalentes
-
-Generar variable de atribuciones a partir de las clases latentes de la investigación de Frei et al.
-
-```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-## Sacar NA en nueva bbdd
-
-proc_data_2019 <- na.omit(proc_data_2019) 
-
-## Nueva variable con 3 clases latentes. 
-
-## PRECAUCION: esto es por mientras. Para hacer analisis de clases latentes se recomienda "latent class regression model". Reisar texto de Linzer y Lewis sobre poLCA
-
-### Variable que toma tanto at. de pobreza como de riqueza
-
-proc_data_2019<-proc_data_2019 %>% mutate(attclass =
-                     case_when(Att_p1 == "atribucion interna" & 
-           Att_p2 == "atribucion interna" &
-           Att_r1 == "atribucion interna" &
-           Att_r2 == "atribucion interna" ~ "interna", 
-                               Att_p1 == "atribucion externa" & 
-           Att_p2 == "atribucion externa" &
-           Att_r1 == "atribucion externa" &
-           Att_r2 == "atribucion externa" ~ "externa",
-           TRUE  ~ "ambivalente")
-)
-
-### Ahora se generan dos variables por separado para at. de pobreza y de riqueza
-
-proc_data_2019<-proc_data_2019 %>% mutate(pob_attclass =
-                     case_when(Att_p1 == "atribucion interna" & 
-           Att_p2 == "atribucion interna" ~ "interna", 
-                               Att_p1 == "atribucion externa" & 
-           Att_p2 == "atribucion externa" ~ "externa",
-           TRUE  ~ "ambivalente")
-)
-
-proc_data_2019<-proc_data_2019 %>% mutate(riq_attclass =
-                     case_when(Att_r1 == "atribucion interna" & 
-           Att_r2 == "atribucion interna" ~ "interna", 
-                               Att_r1 == "atribucion externa" & 
-           Att_r2 == "atribucion externa" ~ "externa",
-           TRUE  ~ "ambivalente")
-)
-
-#proc_data$Att_p1[proc_data$Att_p1 == "atribucion interna"] <- 1
-#proc_data$Att_p1[proc_data$Att_p1 == "atribucion externa"] <- 2
-
-#proc_data$Att_p2[proc_data$Att_p2 == "atribucion interna"] <- 1
-#proc_data$Att_p2[proc_data$Att_p2 == "atribucion externa"] <- 2
-
-#proc_data$Att_r1[proc_data$Att_r1 == "atribucion interna"] <- 1
-#proc_data$Att_r1[proc_data$Att_r1 == "atribucion externa"] <- 2
-
-#proc_data$Att_r2[proc_data$Att_r2 == "atribucion interna"] <- 1
-#proc_data$Att_r2[proc_data$Att_r2 == "atribucion externa"] <- 2
-
-# Ahora clasificamos. Si es 4 o menos = int, si es 
-
-```
-
 ### Ajustes en variables de meritocracia
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
@@ -1214,6 +1153,52 @@ proc_data_2019$prefmerit  <- set_label(x = proc_data_2019$prefmerit, label = "Pr
 data_preferencia<-proc_data_2019 %>% dplyr::select(pref_responsabilidad,pref_educacion,pref_trabajo)
 ```
 
+### Generar variable de atribuciones con tres valores: internas, externas y ambivalentes
+
+Generar variable de atribuciones a partir de las clases latentes de la investigación de Frei et al.
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+## Sacar NA en nueva bbdd
+
+data_naomit2019 <- na.omit(proc_data_2019) 
+
+## Nueva variable con 3 clases latentes. 
+
+## PRECAUCION: esto es por mientras. Para hacer analisis de clases latentes se recomienda "latent class regression model". Reisar texto de Linzer y Lewis sobre poLCA
+
+### Variable que toma tanto at. de pobreza como de riqueza
+
+data_naomit2019<-data_naomit2019 %>% mutate(attclass =
+                     case_when(Att_p1 == "atribucion interna" & 
+           Att_p2 == "atribucion interna" &
+           Att_r1 == "atribucion interna" &
+           Att_r2 == "atribucion interna" ~ "interna", 
+                               Att_p1 == "atribucion externa" & 
+           Att_p2 == "atribucion externa" &
+           Att_r1 == "atribucion externa" &
+           Att_r2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+
+### Además se generan dos variables por separado para at. de pobreza y de riqueza
+
+data_naomit2019<-data_naomit2019 %>% mutate(pob_attclass =
+                     case_when(Att_p1 == "atribucion interna" & 
+           Att_p2 == "atribucion interna" ~ "interna", 
+                               Att_p1 == "atribucion externa" & 
+           Att_p2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+
+data_naomit2019<-data_naomit2019 %>% mutate(riq_attclass =
+                     case_when(Att_r1 == "atribucion interna" & 
+           Att_r2 == "atribucion interna" ~ "interna", 
+                               Att_r1 == "atribucion externa" & 
+           Att_r2 == "atribucion externa" ~ "externa",
+           TRUE  ~ "ambivalente")
+)
+```
+
 Guardar bases de datos
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
@@ -1225,6 +1210,7 @@ save(data_percepcion,file = "../Input/Data_proc/2019/data_percepcion.RData")
 save(data_preferencia,file = "../Input/Data_proc/2019/data_preferencia.RData")
 save(proc_cep_2019,file = "../Input/Data_proc/2019/proc_cep_2019.RData")
 save(proc_data_2019,file = "../Input/Data_proc/2019/proc_data_2019.RData")
+save(data_naomit2019,file = "../Input/Data_proc/2019/data_naomit2019.RData")
 ```
 
 # Unir bases de datos y ajustes finales a la base de datos procesada (2000, 2009 y 2019)
@@ -1250,7 +1236,7 @@ frq(proc_cep$at_riqueza1)
 proc_data[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
                ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
 
-proc_data[, Att_r2 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+proc_data[, Att_r2 := ifelse(at_riqueza2 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
                ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
 
 proc_data<-as.data.frame(proc_data)
