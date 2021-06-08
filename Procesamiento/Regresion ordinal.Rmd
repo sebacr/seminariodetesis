@@ -1,0 +1,105 @@
+---
+title: "Regresion ordinal"
+author: "Sebastián Cortinez"
+date: "24-05-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+options(scipen=999) # valores sin notación científica
+#install.packages("pacman")
+library(pacman)
+#detach("package:memisc", unload = TRUE)
+#install.packages("devtools")
+#devtools::install_github("melff/memisc",subdir="pkg")
+#devtools::install_github("AlineTalhouk/Amisc")
+pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
+#webshot::install_phantomjs()
+
+#  Cargar bbdd
+
+load("../Input/Data_proc/proc_data.RData")
+```
+
+
+# Regresión logística ordinal
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+#data_naomit2019$attclass <- factor(data_naomit2019$attclass)
+#data_naomit2019$attclass = factor(data_naomit2019$attclass,
+#                    levels=c("externa","ambivalente","interna"))
+
+frq(proc_data$pred_atribuciones)
+proc_data$pred_atribuciones<-as.factor(proc_data$pred_atribuciones)
+frq(proc_data$pred_atribuciones)
+
+proc_data$año<-as.factor(proc_data$año)
+
+# Run the ordinal logistic regression model
+m1 <- polr(pred_atribuciones ~ sexo + ESS + nivel_educ + año, data=proc_data)
+m2 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos + año, data=proc_data)
+m3 <- polr(pred_atribuciones ~ pref_responsabilidad + pref_educacion + pref_trabajo + año, data=proc_data)
+m4 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ + año, data=proc_data)
+
+m5 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=proc_data)
+
+m6 <- polr(pred_atribuciones ~  dico_esfuerzo + dico_inteligencia + + dico_pref_responsabilidad + dico_pref_educacion + dico_pref_trabajo + sexo + ESS + nivel_educ + año, data=proc_data)
+```
+
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(list(m1,m2,m3,m4))
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(m6)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(m5)
+```
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Dummy para cada año
+
+library(fastDummies)
+#install.packages("ordinal")
+library(ordinal)
+
+proc_data <- dummy_cols(proc_data,select_columns = "año")
+
+m7 <- clm(pred_atribuciones ~ año_2009*(pem_inteligencia+pem_esfuerzos) + año_2019*(pem_inteligencia+pem_esfuerzos) + pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS, data=proc_data)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(m7)
+```
+
+
+
+# Se realizará modelo con dos años a ver si simplifica interpretacion
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+data_2fechas<-proc_data[!(proc_data$año==2009),]
+data_2fechas$año<-as.character(data_2fechas$año)
+data_2fechas$año[data_2fechas$año == "2000"] <- "0"
+data_2fechas$año[data_2fechas$año == "2019"] <- "1"
+data_2fechas$año<-as.factor(data_2fechas$año)
+data_2fechas <- dummy_cols(data_2fechas,select_columns = "año")
+
+frq(data_2fechas$año)
+model2 <- clm(pred_atribuciones ~ año_1*(pem_inteligencia+pem_esfuerzos) + pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS, data=data_2fechas)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(model2)
+```

@@ -11,55 +11,126 @@ options(scipen=999) # valores sin notación científica
 library(pacman)
 #detach("package:memisc", unload = TRUE)
 #install.packages("devtools")
-if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
-if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
-if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
+# devtools::install_github("melff/memisc",subdir="pkg")
+# devtools::install_github("AlineTalhouk/Amisc")
+pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
 #webshot::install_phantomjs()
 
 #  Cargar bbdd
 
 load("../Input/Data_proc/2019/data_percepcion.RData")
 load("../Input/Data_proc/2019/data_preferencia.RData")
+load("../Input/Data_proc/2019/proc_data_2019.RData")
 load("../Input/Data_proc/2019/proc_cep_2019.RData")
-load("../Input/Data_proc/2019/data_naomit2019.RData")
+  load("../Input/Data_proc/2019/data_naomit2019.RData")
 
 #data_naomit2019 %>% replace_na(list(pref_trabajo = "NS/NR", id_politica = "NS/NR"))
 #sum(is.na(data_naomit2019))
 #data_naomit2019[is.na(data_naomit2019)] <- "NS/NR"
 ```
 
+# Análisis clases latentes
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+data_naomit2019 %>% 
+  dplyr::select(starts_with("Att_")) %>% 
+  names() 
+
+f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
+
+f1 <- cbind(Att_p1,Att_p2)~1
+f2 <- cbind(Att_r1,Att_r2)~1
+```
+
+## Análisis de dos clases con pob + riq (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+data_naomit2019 %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 2, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_2clases # BIC = 21472.32
+```
+
+
+## Análisis de tres clases con pob + riq
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+data_naomit2019 %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 100000) -> LCA_3clases # BIC = 7319.363
+```
+
+### Agregar columna con clases predichas
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+LCA_3clases$predclass
+
+data_naomit2019 <- cbind(data_naomit2019, "pred_atribuciones" = LCA_3clases$predclass)
+data_naomit2019$pred_atribuciones<-as.factor(data_naomit2019$pred_atribuciones)
+data_naomit2019$pred_atribuciones<-set_label(x=data_naomit2019$pred_atribuciones, label = "Atribuciones 3 clases")
+```
+
+## Análisis de tres clases pobreza (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+frq(data_naomit2019$at_pobreza1)
+data_naomit2019 %>% 
+  dplyr::select(at_pobreza1,at_pobreza2) %>%  
+  poLCA(xd, ., nclass = 3, nrep = 10, graphs = TRUE, maxiter = 100000) -> LCA_3clases # BIC = 
+```
+
+## Análisis de tres clases riqueza (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+data_naomit2019 %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_3clases # BIC = 21464.48
+```
+
+
 # Análisis datos 2019
 
 Descriptivos generales variables 2019
 
-```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-proc_cep_2019$at_pobreza1<-haven::as_factor(proc_cep_2019$at_pobreza1)
-proc_cep_2019$at_pobreza2<-haven::as_factor(proc_cep_2019$at_pobreza2)
-proc_cep_2019$at_riqueza1<-haven::as_factor(proc_cep_2019$at_riqueza1)
-proc_cep_2019$at_riqueza2<-haven::as_factor(proc_cep_2019$at_riqueza2)
-proc_cep_2019$año<-haven::as_factor(proc_cep_2019$año)
-proc_cep_2019$sexo<-haven::as_factor(proc_cep_2019$sexo)
-proc_cep_2019$id_politica<-haven::as_factor(proc_cep_2019$id_politica)
-```
-
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 # Descriptivos 2019
-kable(papeR::summarize(proc_cep_2019, type = "numeric"),variable.labels = TRUE)
-kable(papeR::summarize(proc_cep_2019, type = "factor", cumulative = TRUE))
+kable(papeR::summarize(proc_data_2019, type = "numeric"),variable.labels = TRUE)
+kable(papeR::summarize(proc_data_2019, type = "factor", cumulative = TRUE))
+
+
+descriptivos_merit <- proc_data_2019 %>% dplyr::select(pem_esfuerzos,pem_inteligencia,pref_responsabilidad,pref_educacion,pref_trabajo)
+
+
+dfsum<- dfSummary(descriptivos_merit,
+               plain.ascii = FALSE,
+               style = "grid",
+               tmp.img.dir = "./tmp",
+               graph.magnif = 0.75,
+               headings = F,  # encabezado
+               varnumbers = F, # num variable
+               labels.col = T, # etiquetas
+               na.col = F,    # missing
+               graph.col = T, # plot
+               valid.col = T, # n valido
+               col.widths = c(5,10,10,10,10)
+               )
+dfsum$Variable <- NULL # delete variable column
+
+print(dfsum)
 ```
 
-Tabla descriptiva atribuciones de pobreza y riqueza
+# Tabla descriptiva atribuciones de pobreza y riqueza
 
 
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
 
 # Falta mejorar visualización de tabla
 
-furniture::table1(proc_cep_2019,
+furniture::table1(proc_data_2019,
   "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
   test = TRUE,
   na.rm = FALSE,
   format_number = TRUE) -> tab1
+?kbl
 
 kbl(tab1, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
 kable_styling(latex_options = c("striped", "HOLD_position")) %>%
@@ -67,10 +138,16 @@ kable_styling(latex_options = c("striped", "HOLD_position")) %>%
 #%>%
 #  save_kable("../Output/Tablas/at_pobreza_2019.html")
 
+data_atribuciones <- proc_data_2019 %>% dplyr::select(at_pobreza1,at_pobreza2,at_riqueza1,at_riqueza2)
+view(dfSummary(data_atribuciones, headings=FALSE))
+
+at1<-freq(data_naomit2019$pob_attclass,cumul=FALSE)
+at1
 ```
 
 
-Tabla de correlación entre percepciones de meritocracia 
+
+# Tabla de correlación entre percepciones de meritocracia 
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 tab_corr(data_percepcion,
@@ -78,7 +155,7 @@ tab_corr(data_percepcion,
          encoding = "Windows-1252") 
 ```
 
-Tabla de correlación entre preferencias de meritocracia 
+# Tabla de correlación entre preferencias de meritocracia 
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 tab_corr(data_preferencia,
@@ -86,20 +163,8 @@ tab_corr(data_preferencia,
          encoding = "Windows-1252") 
 ```
 
-Tabla de promedios entre percepción de meritocracia y atribuciones
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-
-  data_naomit2019 %>% # se especifica la base de datos
-  dplyr::select(pmerit,attclass) %>% # se seleccionan las variables
-  dplyr::group_by(Atribuciones=sjlabelled::as_label(attclass)) %>% # se agrupan por la variable categórica y se usan sus etiquetas con as_label
-  dplyr::summarise(Obs.=n(),Promedio=mean(pmerit),SD=sd(pmerit)) %>% # se agregan las operaciones a presentar en la tabla
-  kable(, format = "markdown") # se genera la tabla
-
-```
-
-Tabla de promedios entre preferencias de meritocracia y atribuciones
-
+# Tabla de respuestas var. indep y var. dependiente
+Hay que usar etiquetas
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 
   data_naomit2019 %>% # se especifica la base de datos
@@ -112,14 +177,42 @@ Tabla de promedios entre preferencias de meritocracia y atribuciones
 view_df(data_naomit2019,encoding = "")
 ```
 
-Tabla de contingencia atribuciones de pobreza 2019 (HAY QUE MODIFICAR VARIABLES PARA QUE AMBAS SEAN CATEGORICAS)
+
+# Regresión logística ordinal 2019
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+#data_naomit2019$attclass <- factor(data_naomit2019$attclass)
+#data_naomit2019$attclass = factor(data_naomit2019$attclass,
+#                    levels=c("externa","ambivalente","interna"))
+
+frq(data_naomit2019$pred_atribuciones)
+data_naomit2019$pred_atribuciones<-as.factor(data_naomit2019$pred_atribuciones)
+frq(data_naomit2019$pred_atribuciones)
+
+data_naomit2019$año<-as.factor(data_naomit2019$año)
+
+# Run the ordinal logistic regression model
+m1 <- polr(pred_atribuciones ~ sexo + ESS + nivel_educ, data=data_naomit2019)
+m2 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos, data=data_naomit2019)
+m3 <- polr(pred_atribuciones ~ pref_responsabilidad + pref_educacion + pref_trabajo, data=data_naomit2019)
+m4 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+
+m5 <- polr(pred_atribuciones ~ pem_inteligencia + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+
+
+m6 <- polr(pred_atribuciones ~  dico_esfuerzo + dico_inteligencia + + dico_pref_responsabilidad + dico_pref_educacion + dico_pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+```
+
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(list(m1,m2,m3,m4))
+```
 
-sjt.xtab(data_naomit2019$pmerit, data_naomit2019$attclass,
-        show.col.prc=TRUE,
-        show.summary=FALSE
-)
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(m5)
 ```
 
 # Regresiones con attclass (preclasificación para at. de pobreza junto a at. de riqueza)

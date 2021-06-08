@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4.2 Modelos | Tesis de grado</title>
   <meta name="description" content="4.2 Modelos | Tesis de grado" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4.2 Modelos | Tesis de grado" />
   <meta property="og:type" content="book" />
@@ -24,6 +24,7 @@
 <meta name="author" content="Sebastián Cortínez Rojas" />
 
 
+<meta name="date" content="2021-06-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,6 +33,7 @@
   
 <link rel="prev" href="análisis-descriptivo.html"/>
 <link rel="next" href="conclusiones.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -49,24 +51,27 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
-<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,7 +91,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -119,6 +124,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -137,26 +165,46 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Resumen</a></li>
 <li class="chapter" data-level="" data-path="agradecimientos.html"><a href="agradecimientos.html"><i class="fa fa-check"></i>Agradecimientos</a></li>
-<li class="chapter" data-level="1" data-path="introducción-tesisfacsodown.html"><a href="introducción-tesisfacsodown.html"><i class="fa fa-check"></i><b>1</b> Introducción: tesisfacsodown</a><ul>
-<li class="chapter" data-level="1.1" data-path="requisitos.html"><a href="requisitos.html"><i class="fa fa-check"></i><b>1.1</b> Requisitos</a></li>
-<li class="chapter" data-level="1.2" data-path="pasos.html"><a href="pasos.html"><i class="fa fa-check"></i><b>1.2</b> Pasos</a></li>
-<li class="chapter" data-level="1.3" data-path="algunos-detalles-adicionales.html"><a href="algunos-detalles-adicionales.html"><i class="fa fa-check"></i><b>1.3</b> Algunos detalles adicionales:</a></li>
-<li class="chapter" data-level="1.4" data-path="publicación-web-y-versionamiento.html"><a href="publicación-web-y-versionamiento.html"><i class="fa fa-check"></i><b>1.4</b> Publicación web y versionamiento</a></li>
+<li class="chapter" data-level="1" data-path="introducción.html"><a href="introducción.html"><i class="fa fa-check"></i><b>1</b> Introducción:</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="la-sostenida-desigualdad-socioeconómica-en-chile-.html"><a href="la-sostenida-desigualdad-socioeconómica-en-chile-.html"><i class="fa fa-check"></i><b>1.1</b> La sostenida desigualdad socioeconómica en Chile.</a></li>
+<li class="chapter" data-level="1.2" data-path="cambios-culturales-y-de-subjetividades-en-la-sociedad-chilena.html"><a href="cambios-culturales-y-de-subjetividades-en-la-sociedad-chilena.html"><i class="fa fa-check"></i><b>1.2</b> Cambios culturales y de subjetividades en la sociedad chilena</a></li>
+<li class="chapter" data-level="1.3" data-path="objetivos-de-investigación.html"><a href="objetivos-de-investigación.html"><i class="fa fa-check"></i><b>1.3</b> Objetivos de investigación</a></li>
+<li class="chapter" data-level="1.4" data-path="estructura-de-investigación.html"><a href="estructura-de-investigación.html"><i class="fa fa-check"></i><b>1.4</b> Estructura de investigación</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="antecedentes-conceptuales-y-empíricos.html"><a href="antecedentes-conceptuales-y-empíricos.html"><i class="fa fa-check"></i><b>2</b> Antecedentes conceptuales y empíricos</a><ul>
-<li class="chapter" data-level="2.1" data-path="concepto-principal-explanandum-objeto-de-estudio.html"><a href="concepto-principal-explanandum-objeto-de-estudio.html"><i class="fa fa-check"></i><b>2.1</b> (concepto principal - explanandum - objeto de estudio)</a></li>
-<li class="chapter" data-level="2.2" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html"><i class="fa fa-check"></i><b>2.2</b> Factores asociados a objeto de estudio</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html#factor-1"><i class="fa fa-check"></i><b>2.2.1</b> Factor 1</a></li>
-<li class="chapter" data-level="2.2.2" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html#factor-n"><i class="fa fa-check"></i><b>2.2.2</b> Factor N</a></li>
+<li class="chapter" data-level="2" data-path="antecedentes.html"><a href="antecedentes.html"><i class="fa fa-check"></i><b>2</b> Antecedentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html"><i class="fa fa-check"></i><b>2.1</b> Atribuciones de pobreza y riqueza</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html#conceptualización-y-medición-de-atribuciones"><i class="fa fa-check"></i><b>2.1.1</b> Conceptualización y medición de atribuciones</a></li>
+<li class="chapter" data-level="2.1.2" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html#antecedentes-de-las-atribuciones-de-pobreza-y-riqueza"><i class="fa fa-check"></i><b>2.1.2</b> Antecedentes de las atribuciones de pobreza y riqueza</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="meritocracia.html"><a href="meritocracia.html"><i class="fa fa-check"></i><b>2.2</b> Meritocracia</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="meritocracia.html"><a href="meritocracia.html#un-concepto-controversial"><i class="fa fa-check"></i><b>2.2.1</b> Un concepto controversial</a></li>
+<li class="chapter" data-level="2.2.2" data-path="meritocracia.html"><a href="meritocracia.html#las-creencias-meritocráticas-en-las-ciencias-sociales"><i class="fa fa-check"></i><b>2.2.2</b> Las creencias meritocráticas en las ciencias sociales</a></li>
+<li class="chapter" data-level="2.2.3" data-path="meritocracia.html"><a href="meritocracia.html#creencias-meritocráticas-y-atribuciones-de-pobreza-y-riqueza"><i class="fa fa-check"></i><b>2.2.3</b> Creencias meritocráticas y atribuciones de pobreza y riqueza</a></li>
+<li class="chapter" data-level="2.2.4" data-path="meritocracia.html"><a href="meritocracia.html#antecedentes-en-la-relación-entre-meritocracia-y-atribuciones-de-pobreza"><i class="fa fa-check"></i><b>2.2.4</b> Antecedentes en la relación entre meritocracia y atribuciones de pobreza</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="metodología.html"><a href="metodología.html"><i class="fa fa-check"></i><b>3</b> Metodología</a><ul>
+<li class="chapter" data-level="3" data-path="datos-variables-y-métodos.html"><a href="datos-variables-y-métodos.html"><i class="fa fa-check"></i><b>3</b> Datos, variables y métodos</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="datos.html"><a href="datos.html"><i class="fa fa-check"></i><b>3.1</b> Datos</a></li>
-<li class="chapter" data-level="3.2" data-path="variables.html"><a href="variables.html"><i class="fa fa-check"></i><b>3.2</b> Variables</a></li>
+<li class="chapter" data-level="3.2" data-path="variables.html"><a href="variables.html"><i class="fa fa-check"></i><b>3.2</b> Variables</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="variables.html"><a href="variables.html#variables-dependientes"><i class="fa fa-check"></i><b>3.2.1</b> Variables dependientes</a></li>
+<li class="chapter" data-level="3.2.2" data-path="variables.html"><a href="variables.html#variables-independientes"><i class="fa fa-check"></i><b>3.2.2</b> Variables independientes</a></li>
+<li class="chapter" data-level="3.2.3" data-path="variables.html"><a href="variables.html#variables-de-control"><i class="fa fa-check"></i><b>3.2.3</b> Variables de control</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="métodos.html"><a href="métodos.html"><i class="fa fa-check"></i><b>3.3</b> Métodos</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="análisis.html"><a href="análisis.html"><i class="fa fa-check"></i><b>4</b> Análisis</a><ul>
-<li class="chapter" data-level="4.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html"><i class="fa fa-check"></i><b>4.1</b> Análisis descriptivo</a></li>
+<li class="chapter" data-level="4" data-path="análisis.html"><a href="análisis.html"><i class="fa fa-check"></i><b>4</b> Análisis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html"><i class="fa fa-check"></i><b>4.1</b> Análisis descriptivo</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html#variable-dependiente"><i class="fa fa-check"></i><b>4.1.1</b> Variable dependiente</a></li>
+<li class="chapter" data-level="4.1.2" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html#variables-independientes-1"><i class="fa fa-check"></i><b>4.1.2</b> Variables independientes</a></li>
+</ul></li>
 <li class="chapter" data-level="4.2" data-path="modelos.html"><a href="modelos.html"><i class="fa fa-check"></i><b>4.2</b> Modelos</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="conclusiones.html"><a href="conclusiones.html"><i class="fa fa-check"></i><b>5</b> Conclusiones</a></li>
@@ -181,11 +229,325 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="modelos" class="section level2">
+<div id="modelos" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Modelos</h2>
+<div style="text-align: justify">
+
+<p>Considerando los avances presentados en la sección de análisis descriptivo, al aplicar el modelo de regresión se asume que tanto el valor esperado de Y -variable dependiente- como de la relación entre X e Y varían en el tiempo. Debido a que los datos se agrupan como datos agrupados de sección transversal -pooled cross sectional data- y basándonos en la evidencia del manual de <span class="citation"><a href="#ref-wooldridge_introductory_2013" role="doc-biblioref">Wooldridge</a> (<a href="#ref-wooldridge_introductory_2013" role="doc-biblioref">2013</a>)</span>, no se aplicarán efectos fijos o efectos aleatorios. La regresión que se aplicará toma la forma de Mínimos Cuadrados Ordinarios (MCO) agrupado -o en inglés ‘pooled OLS’-.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="modelos.html#cb1-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">clm</span>(pred_atribuciones <span class="sc">~</span> año_2009<span class="sc">*</span>(pem_inteligencia<span class="sc">+</span>pem_esfuerzos) <span class="sc">+</span> año_2019<span class="sc">*</span>(pem_inteligencia<span class="sc">+</span>pem_esfuerzos) <span class="sc">+</span> pref_responsabilidad <span class="sc">+</span> pref_educacion <span class="sc">+</span> pref_trabajo <span class="sc">+</span> sexo <span class="sc">+</span> ESS, <span class="at">data=</span>proc_data)</span></code></pre></div>
+<table class="texreg" style="margin: 10px auto;border-collapse: collapse;border-spacing: 0px;caption-side: bottom;color: #000000;border-top: 2px solid #000000;">
+<caption>
+Statistical models
+</caption>
+<thead>
+<tr>
+<th style="padding-left: 5px;padding-right: 5px;">
+ 
+</th>
+<th style="padding-left: 5px;padding-right: 5px;">
+Model 1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+año_2009
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.68<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.34)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pem_inteligencia
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.03
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.06)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pem_esfuerzos
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.03
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.06)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+año_2019
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.88<sup>**</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.31)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pref_responsabilidad
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.01
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.05)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pref_educacion
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.06
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.04)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pref_trabajo
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.03
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.05)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+sexo1
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.01
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.06)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ESS
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.03
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.02)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+año_2009:pem_inteligencia
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.01
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.09)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+año_2009:pem_esfuerzos
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.02
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.08)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pem_inteligencia:año_2019
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.01
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.08)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+pem_esfuerzos:año_2019
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.08
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.08)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+1|2
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-0.73<sup>*</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.30)
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+2|3
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+0.80<sup>**</sup>
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+ 
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+(0.30)
+</td>
+</tr>
+<tr style="border-top: 1px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+AIC
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+8745.84
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+BIC
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+8840.49
+</td>
+</tr>
+<tr>
+<td style="padding-left: 5px;padding-right: 5px;">
+Log Likelihood
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+-4357.92
+</td>
+</tr>
+<tr style="border-bottom: 2px solid #000000;">
+<td style="padding-left: 5px;padding-right: 5px;">
+Num. obs.
+</td>
+<td style="padding-left: 5px;padding-right: 5px;">
+4064
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="font-size: 0.8em;" colspan="2">
+<sup><em><strong></sup>p &lt; 0.001; <sup></strong></sup>p &lt; 0.01; <sup></em></sup>p &lt; 0.05
+</td>
+</tr>
+</tfoot>
+</table>
+<p>El modelo <a href="#tab:tab-reg"><strong>??</strong></a><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> es un primer acercamiento a una regresión ordinal con cambios en el intercepto y en la relación entre variables independientes y dependiente. Debido a que no es el modelo definitivo, la interpretación se ve postergada. Sin embargo, la nula significancia obtenida de los coeficientes de las variables dependientes nos indican que por el momento la hipótesis alternativa no se cumple. Por otra parte, existe significancia en las variables correspondientes al tiempo (año 2009 y 2019), lo cual indica un cambio de la variable dependiente a lo largo del tiempo.</p>
+<p>Se espera una interpretación más sustantiva para el modelo definitivo a utilizar.</p>
 
 </div>
 <!-- </div> -->
+<h3>References</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-wooldridge_introductory_2013" class="csl-entry">
+Wooldridge, Jeffrey M. 2013. <em>Introductory Econometrics: A Modern Approach</em>. 5th ed. <span>Mason, OH</span>: <span>South-Western Cengage Learning</span>.
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>Hay una serie de decisiones tomadas tras el modelo que me gustaría discutir. Primero algunas dudas a raíz de que no encontré ejemplos reproducibles de regresiones ordinales con pooled data. Para regresión ordinal conozco las librerías MMCO y ordinal, mientras que la librería que conozco para pooled OLS es plm, la cual da la opción de especificar model = ‘pooling.’ Las dudas son (a) no estoy seguro de si la variación de los coeficientes por año está bien ingresada en el código. Esto lo hice basado en ejemplos reproducibles de pooled OLS con variable dependiente continua -ejemplo en Wooldridge (2010, pág. 451)-. (b) Debido a que en el ejemplo de Wooldridge se trabaja con dos años, no estoy seguro de si es adecuada la operacionalización como dummies de los tres años (es decir, si es correcto simplemente omitir el año 2000 para considerarlo como variable referencia/intercepto cuando 2009 y 2019 son 0).<a href="modelos.html#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
             </section>
 
           </div>
@@ -215,6 +577,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {

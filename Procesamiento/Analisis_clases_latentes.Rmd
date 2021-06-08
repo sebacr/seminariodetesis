@@ -12,7 +12,7 @@ library(pacman)
 #install.packages("devtools")
 if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
 if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
-if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc)
+pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc)
 #webshot::install_phantomjs()
 
 ### migracion <- read.spss("http://www.losmexicanos.unam.mx/migracion/encuesta_nacional/base_datos/Encuest### a_Nacional_de_Migracion.sav", to.data.frame = TRUE)
@@ -30,136 +30,80 @@ load("../Input/Data_proc/proc_data.RData")
 # Análisis clases latentes
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-# Para ingresar en poLCA se puede trabajar como int (numeric) o factor. Se deja código para trabajar en numerico, pero se procede a trabajarlas como
-## At interna queda como 0 y At externa como 1
+proc_data$Att_p1<-as.factor(proc_data$Att_p1)
+proc_data$Att_p2<-as.factor(proc_data$Att_p2)
+proc_data$Att_r1<-as.factor(proc_data$Att_r1)
+proc_data$Att_r2<-as.factor(proc_data$Att_r2)
 
-#proc_data$Att_p1[proc_data$Att_p1 == "atribucion interna"] <- 1
-#proc_data$Att_p1[proc_data$Att_p1 == "atribucion externa"] <- 2
-
-#proc_data$Att_p2[proc_data$Att_p2 == "atribucion interna"] <- 1
-#proc_data$Att_p2[proc_data$Att_p2 == "atribucion externa"] <- 2
-
-#proc_data$Att_r1[proc_data$Att_r1 == "atribucion interna"] <- 1
-#proc_data$Att_r1[proc_data$Att_r1 == "atribucion externa"] <- 2
-
-#proc_data$Att_r2[proc_data$Att_r2 == "atribucion interna"] <- 1
-#proc_data$Att_r2[proc_data$Att_r2 == "atribucion externa"] <- 2
-
-#proc_data$Att_p1 <- sjlabelled::set_labels(proc_data$Att_p1,
-#            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-#proc_data$Att_p2 <- sjlabelled::set_labels(proc_data$Att_p2,
-#            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-#proc_data$Att_r1 <- sjlabelled::set_labels(proc_data$Att_r1,
-#            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-#proc_data$Att_r2 <- sjlabelled::set_labels(proc_data$Att_r2,
-#            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-
-proc_data_2019$attclass = factor(proc_data_2019$attclass,
-                    levels=c("externa","ambivalente","interna"))
-
-frq(proc_data$Att_r2)
-proc_data$Att_p1<-as_factor(proc_data$Att_p1)
-proc_data$Att_p2<-as_factor(proc_data$Att_p2)
-proc_data$Att_r1<-as_factor(proc_data$Att_r1)
-proc_data$Att_r2<-as_factor(proc_data$Att_r2)
-
-diccionario <- tibble::tibble(nombre = names(proc_data), 
-                    etiquetas = c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito educacion","Pref. merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros hogar","ess","id. politica","nivel educacional","Per. merito ambicion","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2"))
-
-proc_data <- as.tibble(proc_data)
 
 proc_data %>% 
   dplyr::select(starts_with("Att_")) %>% 
   names() 
 
 f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
+
+xd <- cbind(at_pobreza1,at_pobreza2)~1
+
+f1 <- cbind(Att_p1,Att_p2)~1
+f2 <- cbind(Att_r1,Att_r2)~1
 ```
 
-Análisis de dos clases
+# Análisis de dos clases con pob + riq (NO CORRER)
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 proc_data %>% 
   dplyr::select(starts_with("Att_")) %>%  
-  poLCA(f, ., nclass = 2, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_2clases # BIC = 14038.97
+  poLCA(f, ., nclass = 2, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_2clases # BIC = 21472.32 AIC(2): 21415.53
 ```
 
-Análisis de tres clases
+
+# Análisis de tres clases con pob + riq
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 proc_data %>% 
   dplyr::select(starts_with("Att_")) %>%  
-  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_3clases # BIC = 14065.29
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 20000) -> LCA_3clases # BIC = 21464.48 AIC(3): 21376.14
 ```
 
-Comparar modelos con distintas clases.
-Mejor modelo (menor BIC) es de dos clases. Aunque tercero aumenta levemente. A partir de modelo con cuatro clases, los grados de libertad comienzan a ser negativos.
-*OJO*: para alcanzar el mínimo de iteraciones luego de modelo de 2 clases, hay que aumentar maxiter (1000 por default)
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+LCA_3clases$predclass
+
+proc_data <- cbind(proc_data, "pred_atribuciones" = LCA_3clases$predclass)
+save(proc_data,file = "../Input/Data_proc/proc_data.RData")
+```
+
+# Análisis de tres clases pobreza (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+frq(proc_data$at_pobreza1)
+proc_data %>% 
+  dplyr::select(at_pobreza1,at_pobreza2) %>%  
+  poLCA(xd, ., nclass = 3, nrep = 10, graphs = TRUE, maxiter = 100000) -> LCA_3clases # BIC = 
+```
+
+# Análisis de tres clases riqueza (NO CORRER)
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 proc_data %>% 
-  dplyr::select(starts_with("Att_")) -> bloque_att
-
-# Para UNIX
-#mclapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
-
-# Para Windows: 
-lapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
-
-
-```
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-map_df(LCA_1a9, glance) %>% 
-  kable(caption = "Comparación de modelos con 1 a nueve clases")
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_3clases # BIC = 21464.48
 ```
 
 
+
+# Analisis clases latentes 2019
+
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-map_df(LCA_1a9, glance) %>% 
-  dplyr::select(-df, -df.residual, -chi.squared) %>% 
-  mutate(modelo = as.character(1:nrow(.))) %>%
-  gather(cantidad, valor, -modelo) %>% 
-  ggplot(aes(x= modelo, y = valor, group = 1)) + 
-    geom_line() + 
-    geom_point() + 
-    facet_wrap(~cantidad, scales = "free") +
-    labs(title = "Comparación de modelos para el bloque p7", 
-         subtitle = "La pendiente se aplana a partir de modelos con dos clases") + 
-    theme_minimal()
+proc_data2019 <- subset(proc_data, año == "2019")
+proc_data2019 %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 20000) -> LCA3_2019
 ```
 
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+LCA3_2019$predclass
 
-etiquetas_item <- tibble(outcome = 1:length(levels(proc_data$Att_p1)), 
-                         etiqueta_item = c("Att interna","Att externa")
-)
-etiquetas_item$outcome<-as.factor(etiquetas_item$outcome)
-#install.packages("colorspace")
-library(colorspace)
-
-LCA_1a9[[2]] %>% 
-  tidy %>% 
-  left_join(dplyr::rename(diccionario, variable = nombre)) %>% 
-  left_join(etiquetas_item) %>% 
-  mutate(etiquetas = str_remove(etiquetas, 
-                                "Att"), 
-         etiquetas = str_wrap(etiquetas, 30),
-         etiqueta_item = factor(etiqueta_item, 
-                                levels = c("Interna", "Externa")), 
-         class = paste("Clase", class)) %>%
-  ggplot(aes(x = etiquetas, fill = etiqueta_item, y = estimate)) + 
-  geom_col() + 
-  facet_wrap(~class, nrow = 1) + 
-  scale_fill_viridis_d() + 
-  theme_minimal() +
-  theme(legend.position = "bottom") + 
-  labs(fill = "Respuesta", 
-       x = "Tipos de atribuciones", 
-       y = "Probabilidad de respuesta por clase") + 
-  coord_flip()
-
-sessionInfo()
+proc_data2019 <- cbind(proc_data2019, "pred_atribuciones" = LCA3_2019$predclass)
 ```
-
 

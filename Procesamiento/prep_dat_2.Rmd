@@ -11,7 +11,7 @@ options(scipen=999) # valores sin notación científica
 #install.packages("pacman")
 library(pacman)
 #detach("package:memisc", unload = TRUE)
-pacman::p_load(dplyr, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot)
+pacman::p_load(dplyr, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,poLCA)
 #devtools::install_github("melff/memisc",subdir="pkg")
 ```
 
@@ -193,23 +193,23 @@ proc_cep_2000$te2a<-as.numeric(proc_cep_2000$te2a)
 proc_cep_2000$te2b<-as.numeric(proc_cep_2000$te2b)
 
 ## etiquetado
-proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("pem_esfuerzos"=te2a, # percepcion meritocracia esfuerzo
-                                    "pem_inteligencia" =te2b) # percepcion meritocracia inteligencia y capacidades (talento)
+proc_cep_2000 <- proc_cep_2000 %>% dplyr::rename("percep_esfuerzos"=te2a, # percepcion meritocracia esfuerzo
+                                    "percep_inteligencia" =te2b) # percepcion meritocracia inteligencia y capacidades (talento)
 
 ### Re etiquetar valores
 
-### proc_cep_2000$pem_esfuerzos <- sjlabelled::set_labels(proc_cep_2000$pem_esfuerzos,
+### proc_cep_2000$percep_esfuerzos <- sjlabelled::set_labels(proc_cep_2000$percep_esfuerzos,
 ###            labels=c( "Muy en desacuerdo"=1,"En desacuerdo"=2,"Ni de acuerdo ni en desacuerdo"=3,
 ###                      "De acuerdo"=4,"Muy de acuerdo"=5))
-### proc_cep_2000$pem_inteligencia <- sjlabelled::set_labels(proc_cep_2000$pem_inteligencia,
+### proc_cep_2000$percep_inteligencia <- sjlabelled::set_labels(proc_cep_2000$percep_inteligencia,
 ###            labels=c( "Muy en desacuerdo"=1,"En desacuerdo"=2,"Ni de acuerdo ni en desacuerdo"=3,
 ###                      "De acuerdo"=4,"Muy de acuerdo"=5))
 
-get_label(proc_cep_2000$pem_esfuerzos)
-proc_cep_2000$pem_esfuerzos <- set_label(x = proc_cep_2000$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+get_label(proc_cep_2000$percep_esfuerzos)
+proc_cep_2000$percep_esfuerzos <- set_label(x = proc_cep_2000$percep_esfuerzos,label = "Percepcion de merito: esfuerzo")
 
-get_label(proc_cep_2000$pem_inteligencia)
-proc_cep_2000$pem_inteligencia <- set_label(x = proc_cep_2000$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+get_label(proc_cep_2000$percep_inteligencia)
+proc_cep_2000$percep_inteligencia <- set_label(x = proc_cep_2000$percep_inteligencia,label = "Percepcion de merito: inteligencia y capacidades")
 
 #### Preferencias merit ####
 
@@ -251,7 +251,7 @@ get_label(proc_cep_2000$pref_responsabilidad)
 proc_cep_2000$pref_responsabilidad <- set_label(x = proc_cep_2000$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
 
 get_label(proc_cep_2000$pref_educacion)
-proc_cep_2000$pref_educacion <- set_label(x = proc_cep_2000$pref_educacion,label = "Preferencia meritocracia: educación")
+proc_cep_2000$pref_educacion <- set_label(x = proc_cep_2000$pref_educacion,label = "Preferencia meritocracia: educacion")
 
 get_label(proc_cep_2000$pref_trabajo)
 proc_cep_2000$pref_trabajo <- set_label(x = proc_cep_2000$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
@@ -269,6 +269,7 @@ proc_cep_2000 <- dplyr::rename(proc_cep_2000,"sexo"=dat_1)
 
 get_label(proc_cep_2000$sexo)
 
+proc_cep_2000$sexo <- as.factor(proc_cep_2000$sexo)
 proc_cep_2000$sexo <- set_label(x = proc_cep_2000$sexo,label = "Sexo")
 frq(proc_cep_2000$sexo)
 
@@ -563,19 +564,19 @@ proc_cep_2009$TE2P11_E<-as.numeric(proc_cep_2009$TE2P11_E)
 proc_cep_2009$TE2P11_C<-as.numeric(proc_cep_2009$TE2P11_C)
 
 ## etiquetado
-proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("pem_esfuerzos"=TE2P11_E, # percepcion meritocracia esfuerzo
-                                          "pem_inteligencia" =TE2P11_C, # percepcion meritocracia inteligencia y capacidades (talento)
+proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("percep_esfuerzos"=TE2P11_E, # percepcion meritocracia esfuerzo
+                                          "percep_inteligencia" =TE2P11_C, # percepcion meritocracia inteligencia y capacidades (talento)
                                           "pem_ambicion" =TE2P11_D) # percepcion meritocracia ambicion
 
 
-get_label(proc_cep_2009$pem_esfuerzos)
-proc_cep_2009$pem_esfuerzos <- set_label(x = proc_cep_2009$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+get_label(proc_cep_2009$percep_esfuerzos)
+proc_cep_2009$percep_esfuerzos <- set_label(x = proc_cep_2009$percep_esfuerzos,label = "Percepcion de merito esfuerzo")
 
-get_label(proc_cep_2009$pem_inteligencia)
-proc_cep_2009$pem_inteligencia <- set_label(x = proc_cep_2009$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+get_label(proc_cep_2009$percep_inteligencia)
+proc_cep_2009$percep_inteligencia <- set_label(x = proc_cep_2009$percep_inteligencia,label = "Percepcion de merito inteligencia y capacidades")
 
 get_label(proc_cep_2009$pem_ambicion)
-proc_cep_2009$pem_ambicion <- set_label(x = proc_cep_2009$pem_ambicion,label = "Percepción de mérito: ambición")
+proc_cep_2009$pem_ambicion <- set_label(x = proc_cep_2009$pem_ambicion,label = "Percepcion de merito ambición")
 
 #### Preferencias merit ####
 
@@ -605,7 +606,7 @@ get_label(proc_cep_2009$pref_responsabilidad)
 proc_cep_2009$pref_responsabilidad <- set_label(x = proc_cep_2009$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
 
 get_label(proc_cep_2009$pref_educacion)
-proc_cep_2009$pref_educacion <- set_label(x = proc_cep_2009$pref_educacion,label = "Preferencia meritocracia: educación")
+proc_cep_2009$pref_educacion <- set_label(x = proc_cep_2009$pref_educacion,label = "Preferencia meritocracia: educacion")
 
 get_label(proc_cep_2009$pref_trabajo)
 proc_cep_2009$pref_trabajo <- set_label(x = proc_cep_2009$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
@@ -624,6 +625,7 @@ proc_cep_2009 <- dplyr::rename(proc_cep_2009,"sexo"=DDP01)
 
 get_label(proc_cep_2009$sexo)
 
+proc_cep_2009$sexo <- as.factor(proc_cep_2009$sexo)
 proc_cep_2009$sexo <- set_label(x = proc_cep_2009$sexo,label = "Sexo")
 frq(proc_cep_2009$sexo)
 
@@ -916,18 +918,18 @@ proc_cep_2019$M2_P1_4<-as.numeric(proc_cep_2019$M2_P1_4)
 proc_cep_2019$M2_P1_5<-as.numeric(proc_cep_2019$M2_P1_5)
 
 ## etiquetado
-proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("pem_inteligencia"=M2_P1_4, # percepcion meritocracia esfuerzo
-                                          "pem_esfuerzos" =M2_P1_5, # percepcion meritocracia inteligencia y capacidades (talento)
+proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("percep_inteligencia"=M2_P1_4, # percepcion meritocracia esfuerzo
+                                          "percep_esfuerzos" =M2_P1_5, # percepcion meritocracia inteligencia y capacidades (talento)
                                           "pem_ambicion" =M2_P1_1) # percepcion meritocracia ambicion
 
-get_label(proc_cep_2019$pem_esfuerzos)
-proc_cep_2019$pem_esfuerzos <- set_label(x = proc_cep_2019$pem_esfuerzos,label = "Percepción de mérito: esfuerzo")
+get_label(proc_cep_2019$percep_esfuerzos)
+proc_cep_2019$percep_esfuerzos <- set_label(x = proc_cep_2019$percep_esfuerzos,label = "Percepcion de merito esfuerzo")
 
-get_label(proc_cep_2019$pem_inteligencia)
-proc_cep_2019$pem_inteligencia <- set_label(x = proc_cep_2019$pem_inteligencia,label = "Percepción de mérito: inteligencia y capacidades")
+get_label(proc_cep_2019$percep_inteligencia)
+proc_cep_2019$percep_inteligencia <- set_label(x = proc_cep_2019$percep_inteligencia,label = "Percepcion de merito inteligencia y capacidades")
 
 get_label(proc_cep_2019$pem_ambicion)
-proc_cep_2019$pem_ambicion <- set_label(x = proc_cep_2019$pem_ambicion,label = "Percepción de mérito: ambición")
+proc_cep_2019$pem_ambicion <- set_label(x = proc_cep_2019$pem_ambicion,label = "Percepcion de merito ambición")
 
 #### Preferencias merit ####
 
@@ -958,7 +960,7 @@ get_label(proc_cep_2019$pref_responsabilidad)
 proc_cep_2019$pref_responsabilidad <- set_label(x = proc_cep_2019$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
 
 get_label(proc_cep_2019$pref_educacion)
-proc_cep_2019$pref_educacion <- set_label(x = proc_cep_2019$pref_educacion,label = "Preferencia meritocracia: educación")
+proc_cep_2019$pref_educacion <- set_label(x = proc_cep_2019$pref_educacion,label = "Preferencia meritocracia: educacion")
 
 get_label(proc_cep_2019$pref_trabajo)
 proc_cep_2019$pref_trabajo <- set_label(x = proc_cep_2019$pref_trabajo,label = "Preferencia meritocracia: buen trabajo")
@@ -977,6 +979,7 @@ proc_cep_2019 <- dplyr::rename(proc_cep_2019,"sexo"=DS_P1)
 
 get_label(proc_cep_2019$sexo)
 
+proc_cep_2019$sexo <- as.factor(proc_cep_2019$sexo)
 proc_cep_2019$sexo <- set_label(x = proc_cep_2019$sexo,label = "Sexo")
 frq(proc_cep_2019$sexo)
 
@@ -1098,8 +1101,7 @@ Para el año 2019 se dicotomizan las atribuciones en internas/externas, para pos
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 # Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
 
-proc_data_2019<-data.table(proc_cep_2019)
-
+proc_data_2019<-data.table::data.table(proc_cep_2019)
 
 frq(proc_data_2019$at_pobreza1)
 proc_data_2019[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
@@ -1123,6 +1125,11 @@ proc_data_2019$ESS <- set_label(x = proc_data_2019$ESS,label = "Estatus social s
 proc_data_2019$id_politica <- set_label(x = proc_data_2019$id_politica,label = "Identificacion politica")
 proc_data_2019$nivel_educ <- set_label(x = proc_data_2019$nivel_educ,label = "Nivel educacional")
 proc_data_2019$pem_ambicion <- set_label(x = proc_data_2019$pem_ambicion,label = "Percepcion meritocratica ambicion")
+
+proc_data_2019$Att_p1<-as.factor(proc_data_2019$Att_p1)
+proc_data_2019$Att_p2<-as.factor(proc_data_2019$Att_p2)
+proc_data_2019$Att_r1<-as.factor(proc_data_2019$Att_r1)
+proc_data_2019$Att_r2<-as.factor(proc_data_2019$Att_r2)
 proc_data_2019$Att_p1 <- set_label(x = proc_data_2019$Att_p1,label = "Atribucion pob int/ex primera mención")
 proc_data_2019$Att_p2 <- set_label(x = proc_data_2019$Att_p2,label = "Atribucion pob int/ex segunda mención")
 proc_data_2019$Att_r1 <- set_label(x = proc_data_2019$Att_r1,label = "Atribucion riq int/ex primera mención")
@@ -1130,19 +1137,18 @@ proc_data_2019$Att_r2 <- set_label(x = proc_data_2019$Att_r2,label = "Atribucion
 proc_data_2019$año <- set_label(x = proc_data_2019$año,label = "Año")
 
 sum(is.na(proc_data_2019$Att_r2))
-#proc_data_2019[is.na(proc_data_2019)] <- 0
 ```
 
-### Ajustes en variables de meritocracia
+### Indices de meritocracia (bbdd 2019)
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 # Percepciones
 
-proc_data_2019$pmerit <- (proc_data_2019$pem_inteligencia+proc_data_2019$pem_ambicion+proc_data_2019$pem_esfuerzos)/3
+proc_data_2019$pmerit <- (proc_data_2019$percep_inteligencia+proc_data_2019$pem_ambicion+proc_data_2019$percep_esfuerzos)/3
 
 proc_data_2019$pmerit  <- set_label(x = proc_data_2019$pmerit, label = "Percepción meritocracia promedio")
 
-data_percepcion<-proc_data_2019 %>% dplyr::select(pem_ambicion,pem_inteligencia,pem_esfuerzos)
+data_percepcion<-proc_data_2019 %>% dplyr::select(pem_ambicion,percep_inteligencia,percep_esfuerzos)
 
 # Preferencias
 
@@ -1153,9 +1159,24 @@ proc_data_2019$prefmerit  <- set_label(x = proc_data_2019$prefmerit, label = "Pr
 data_preferencia<-proc_data_2019 %>% dplyr::select(pref_responsabilidad,pref_educacion,pref_trabajo)
 ```
 
-### Generar variable de atribuciones con tres valores: internas, externas y ambivalentes
+### Crear variables de meritocracia dicotomizadas
 
-Generar variable de atribuciones a partir de las clases latentes de la investigación de Frei et al.
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Percepcion
+proc_data_2019$dico_esfuerzo <- car::recode(proc_data_2019$percep_esfuerzos,"1:3=0;4:5=1")
+proc_data_2019$dico_inteligencia <- car::recode(proc_data_2019$percep_inteligencia,"1:3=0;4:5=1")
+
+# Preferencias
+frq(proc_data_2019$pref_responsabilidad)
+
+proc_data_2019$dico_pref_responsabilidad <- car::recode(proc_data_2019$pref_responsabilidad,"1:3=0;4:5=1")
+proc_data_2019$dico_pref_educacion <- car::recode(proc_data_2019$pref_educacion,"1:3=0;4:5=1")
+proc_data_2019$dico_pref_trabajo <- car::recode(proc_data_2019$pref_trabajo,"1:3=0;4:5=1")
+```
+
+### Generar variable de atribuciones con tres valores: internas, externas y ambivalentes (bbdd 2019)
+
+Generar variable de atribuciones a partir de clasificación de investigación de Bucca (2016)
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 ## Sacar NA en nueva bbdd
@@ -1213,6 +1234,9 @@ save(proc_data_2019,file = "../Input/Data_proc/2019/proc_data_2019.RData")
 save(data_naomit2019,file = "../Input/Data_proc/2019/data_naomit2019.RData")
 ```
 
+
+
+
 # Unir bases de datos y ajustes finales a la base de datos procesada (2000, 2009 y 2019)
 
 ## Agregar variables de atribuciones dicotomizadas para bbdd de los tres años
@@ -1223,7 +1247,7 @@ proc_cep <- rbind(proc_cep_2000,proc_cep_2009,proc_cep_2019)
 
 # Agregamos la columna de atribuciones interna/externa para at de pobreza y riqueza (bbdd con todos los años)
 
-proc_data<-data.table(proc_cep)
+proc_data<-data.table::data.table(proc_cep)
 
 frq(proc_cep$at_pobreza1)
 proc_data[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
@@ -1232,12 +1256,13 @@ proc_data[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La falta de educación", 
 proc_data[, Att_p2 := ifelse(at_pobreza2 %in% c("La falta de educación", "La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
                ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
 
-frq(proc_cep$at_riqueza1)
+
 proc_data[, Att_r1 := ifelse(at_riqueza1 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
                ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
 
 proc_data[, Att_r2 := ifelse(at_riqueza2 %in% c("El nivel educacional alcanzado", "La iniciativa personal", "El trabajo responsable"), "atribucion interna",
-               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+               ifelse(at_riqueza2 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+frq(proc_data$Att_r2)
 
 proc_data<-as.data.frame(proc_data)
 
@@ -1247,6 +1272,11 @@ proc_data$ESS <- set_label(x = proc_data$ESS,label = "Estatus social subjetivo")
 proc_data$id_politica <- set_label(x = proc_data$id_politica,label = "Identificacion politica")
 proc_data$nivel_educ <- set_label(x = proc_data$nivel_educ,label = "Nivel educacional")
 proc_data$pem_ambicion <- set_label(x = proc_data$pem_ambicion,label = "Percepcion meritocratica ambicion")
+
+proc_data$Att_p1<-as.factor(proc_data$Att_p1)
+proc_data$Att_p2<-as.factor(proc_data$Att_p2)
+proc_data$Att_r1<-as.factor(proc_data$Att_r1)
+proc_data$Att_r2<-as.factor(proc_data$Att_r2)
 proc_data$Att_p1 <- set_label(x = proc_data$Att_p1,label = "Atribucion pob int/ex primera mención")
 proc_data$Att_p2 <- set_label(x = proc_data$Att_p2,label = "Atribucion pob int/ex segunda mención")
 proc_data$Att_r1 <- set_label(x = proc_data$Att_r1,label = "Atribucion riq int/ex primera mención")
@@ -1257,7 +1287,104 @@ proc_data$año <- set_label(x = proc_data$año,label = "Año")
 #proc_data[is.na(proc_data)] <- 0
 ```
 
-## Guardar bbdd
+## Crear variables de meritocracia dicotomizadas
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+# Percepcion
+
+proc_data$dico_esfuerzo <- car::recode(proc_data$percep_esfuerzos,"1:3=0;4:5=1")
+proc_data$dico_inteligencia <- car::recode(proc_data$percep_inteligencia,"1:3=0;4:5=1")
+
+# Preferencias
+frq(proc_data$pref_responsabilidad)
+
+proc_data$dico_pref_responsabilidad <- car::recode(proc_data$pref_responsabilidad,"1:3=0;4:5=1")
+proc_data$dico_pref_educacion <- car::recode(proc_data$pref_educacion,"1:3=0;4:5=1")
+proc_data$dico_pref_trabajo <- car::recode(proc_data$pref_trabajo,"1:3=0;4:5=1")
+```
+
+### Ajustes de variables
+Por ahora no se trabajará con percepcion meritocratica basado en ambicion (no esta en bbdd 2000)
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+colSums(is.na(proc_data))
+proc_data<-subset(proc_data, select = -c(pem_ambicion))
+proc_data<-na.omit(proc_data)
+
+# Poner etiquetas faltantes 
+proc_data$percep_esfuerzos <- set_label(x = proc_data$percep_esfuerzos,label = "Percepcion de merito esfuerzo")
+proc_data$percep_inteligencia <- set_label(x = proc_data$percep_inteligencia,label = "Percepcion de merito inteligencia y capacidades")
+proc_data$pref_responsabilidad <- set_label(x = proc_data$pref_responsabilidad,label = "Preferencia meritocracia: responsabilidad")
+proc_data$pref_educacion <- set_label(x = proc_data$pref_educacion,label = "Preferencia meritocracia: educacion")
+proc_data$pref_trabajo <- set_label(x = proc_data$pref_trabajo,label = "Preferencia meritocracia: trabajo")
+```
+
+
+# Análisis clases latentes
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data$Att_p1<-as.factor(proc_data$Att_p1)
+proc_data$Att_p2<-as.factor(proc_data$Att_p2)
+proc_data$Att_r1<-as.factor(proc_data$Att_r1)
+proc_data$Att_r2<-as.factor(proc_data$Att_r2)
+
+
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>% 
+  names() 
+
+f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
+
+xd <- cbind(at_pobreza1,at_pobreza2)~1
+
+f1 <- cbind(Att_p1,Att_p2)~1
+f2 <- cbind(Att_r1,Att_r2)~1
+```
+
+## Análisis de dos clases con pob + riq (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 2, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_2clases # BIC = 21472.32
+```
+
+
+## Análisis de tres clases con pob + riq
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 20000) -> LCA_3clases # BIC = 21464.48
+```
+
+### Agregar columna con clases predichas
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+LCA_3clases$predclass
+
+proc_data <- cbind(proc_data, "pred_atribuciones" = LCA_3clases$predclass)
+```
+
+## Análisis de tres clases pobreza (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+frq(proc_data$at_pobreza1)
+proc_data %>% 
+  dplyr::select(at_pobreza1,at_pobreza2) %>%  
+  poLCA(xd, ., nclass = 3, nrep = 10, graphs = TRUE, maxiter = 100000) -> LCA_3clases # BIC = 
+```
+
+## Análisis de tres clases riqueza (NO CORRER)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+proc_data %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 5000) -> LCA_3clases # BIC = 21464.48
+```
+
+
+# Guardar bbdd
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 ## unir bases de datos

@@ -12,9 +12,10 @@ options(scipen=999) # valores sin notación científica
 library(pacman)
 #detach("package:memisc", unload = TRUE)
 #install.packages("devtools")
-if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
-if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
-if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc)
+#devtools::install_github("melff/memisc",subdir="pkg")
+#devtools::install_github("AlineTalhouk/Amisc")
+
+pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled,sjPlot, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc)
 #webshot::install_phantomjs()
 
 ### migracion <- read.spss("http://www.losmexicanos.unam.mx/migracion/encuesta_nacional/base_datos/Encuest### a_Nacional_de_Migracion.sav", to.data.frame = TRUE)
@@ -24,150 +25,41 @@ if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,forei
 ### typeof(migracion$p7_5)
 ### migracion$ageb %>% class()
 
+install.packages("vctrs")
+
 #  Cargar bbdd
 
 load("../Input/Data_proc/proc_cep.RData")
 load("../Input/Data_proc/proc_data.RData")
+
+```
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_data$mean_percep <- (proc_data$pem_inteligencia+proc_data$pem_esfuerzos)/2
+proc_data$mean_pref <- (proc_data$pref_responsabilidad+proc_data$pref_educacion+proc_data$pref_trabajo)/3
+
+proc_data$año<-as.factor(proc_data$año)
+data_merit <- proc_data %>% dplyr::select(mean_percep,mean_pref,año)
+data_merit <- proc_data %>% dplyr::select(pem_inteligencia,pem_esfuerzos,pref_responsabilidad,pref_educacion,
+                                          pref_trabajo,año)
+data_merit <- na.omit(data_merit) 
 ```
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-proc_cep$at_pobreza1<-haven::as_factor(proc_cep$at_pobreza1)
-proc_cep$at_pobreza2<-haven::as_factor(proc_cep$at_pobreza2)
-proc_cep$at_riqueza1<-haven::as_factor(proc_cep$at_riqueza1)
-proc_cep$at_riqueza2<-haven::as_factor(proc_cep$at_riqueza2)
-proc_cep$año<-haven::as_factor(proc_cep$año)
-proc_cep$sexo<-haven::as_factor(proc_cep$sexo)
-proc_cep$id_politica<-haven::as_factor(proc_cep$id_politica)
-
+aggregate(data_merit[, 1:2], list(data_merit$año), mean)
+aggregate(data_merit[, 3:5], list(data_merit$año), mean)
 ```
 
-Análisis clases latentes
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+proc_cep$at_pobreza1<-as.factor(proc_cep$at_pobreza1)
+proc_cep$at_pobreza2<-as.factor(proc_cep$at_pobreza2)
+proc_cep$at_riqueza1<-as.factor(proc_cep$at_riqueza1)
+proc_cep$at_riqueza2<-as.factor(proc_cep$at_riqueza2)
+proc_cep$año<-as.factor(proc_cep$año)
+proc_cep$sexo<-as.factor(proc_cep$sexo)
+proc_cep$id_politica<-as.factor(proc_cep$id_politica)
 
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-# Al parecer hay que convertir atribuciones a numerico. 
-## At interna queda como 0 y At externa como 1
-
-proc_data$Att_p1[proc_data$Att_p1 == "atribucion interna"] <- 1
-proc_data$Att_p1[proc_data$Att_p1 == "atribucion externa"] <- 2
-
-proc_data$Att_p2[proc_data$Att_p2 == "atribucion interna"] <- 1
-proc_data$Att_p2[proc_data$Att_p2 == "atribucion externa"] <- 2
-
-proc_data$Att_r1[proc_data$Att_r1 == "atribucion interna"] <- 1
-proc_data$Att_r1[proc_data$Att_r1 == "atribucion externa"] <- 2
-
-proc_data$Att_r2[proc_data$Att_r2 == "atribucion interna"] <- 1
-proc_data$Att_r2[proc_data$Att_r2 == "atribucion externa"] <- 2
-
-proc_data$Att_p1 <- sjlabelled::set_labels(proc_data$Att_p1,
-            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-proc_data$Att_p2 <- sjlabelled::set_labels(proc_data$Att_p2,
-            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-proc_data$Att_r1 <- sjlabelled::set_labels(proc_data$Att_r1,
-            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-proc_data$Att_r2 <- sjlabelled::set_labels(proc_data$Att_r2,
-            labels=c( "atribucion interna"=0,"atribucion externa"=1))
-
-
-proc_data$Att_p1<-as.numeric(proc_data$Att_p1)
-proc_data$Att_p2<-as.numeric(proc_data$Att_p2)
-proc_data$Att_r1<-as.numeric(proc_data$Att_r1)
-proc_data$Att_r2<-as.numeric(proc_data$Att_r2)
-
-# Primero, se señala que hay que transformar la data frame en lista con 'tibble'. Además, hay que generar diccionario
-## Surge un error: compatible size (columns)
-
-#proc_data[] <- lapply(proc_data, function(x) { attributes(x) <- NULL; x })
-#set_col_attr <- function(proc_data, attrs)
-#proc_data  <- set_col_attr(proc_data, c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito #educacion","Pref. merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros #hogar","ess","id. politica","nivel educacional","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2"))
-#proc_data %>% 
-#  sjlabelled::remove_all_labels()
-
-#papeR::labels(proc_data) <- c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito educacion","Pref. #merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros hogar","ess","id. #politica","nivel educacional","Per. merito ambicion","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2")
-#labels(proc_data)
-#is.ldf(proc_data)
-
-
-diccionario <- tibble::tibble(nombre = names(proc_data), 
-                    etiquetas = c("Per. merito esfuerzo","Per. merito intelig","Pref. merito responsabilidad","Pref. merito educacion","Pref. merito trabajo","Att. pobreza 1","Att. pobreza 2","Att. riqueza 1","Att. riqueza 2","sexo","edad","tramo ingresos","miembros hogar","ess","id. politica","nivel educacional","Per. merito ambicion","año","Att. i/e p. 1","Att. i/e p. 2","Att. i/e riq. 1","Att. i/e riq. 2"))
-
-proc_data <- as.tibble(proc_data)
-
-proc_data %>% 
-  dplyr::select(starts_with("Att_")) %>% 
-  names() 
-f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
-```
-
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-proc_data %>% 
-  dplyr::select(starts_with("Att_")) %>%  
-  poLCA(f, ., nclass = 2, nrep = 4) -> LCA_2clases
-```
-
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-proc_data %>% 
-  dplyr::select(starts_with("Att_")) -> bloque_att
-
-# Para UNIX
-#mclapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
-
-# Para Windows: 
-lapply(1:9, function(x) {poLCA(f, bloque_att, nclass = x, nrep = 5)}) -> LCA_1a9
-
-
-```
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-map_df(LCA_1a9, glance) %>% 
-  kable(caption = "Comparación de modelos con 1 a nueve clases")
-```
-
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-map_df(LCA_1a9, glance) %>% 
-  dplyr::select(-df, -df.residual, -chi.squared) %>% 
-  mutate(modelo = as.character(1:nrow(.))) %>%
-  gather(cantidad, valor, -modelo) %>% 
-  ggplot(aes(x= modelo, y = valor, group = 1)) + 
-    geom_line() + 
-    geom_point() + 
-    facet_wrap(~cantidad, scales = "free") +
-    labs(title = "Comparación de modelos para el bloque p7", 
-         subtitle = "La pendiente se aplana a partir de modelos con dos clases") + 
-    theme_minimal()
-```
-
-
-```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-
-etiquetas_item <- tibble(outcome = 1:length(levels(proc_data$Att_p1)), 
-                         etiqueta_item = levels(proc_data$Att_p1)
-)
-
-LCA_1a9[[3]] %>% 
-  tidy %>% 
-  left_join(dplyr::rename(diccionario, variable = nombre)) %>% 
-  left_join(etiquetas_item) %>% 
-  mutate(etiquetas = str_remove(etiquetas, 
-                                "Clase de atribuciones de pobreza y riqueza"), 
-         etiquetas = str_wrap(etiquetas, 30),
-         etiqueta_item = factor(etiqueta_item, 
-                                levels = c("Interna", "Externa")), 
-         class = paste("Clase", class)) %>%
-  ggplot(aes(x = etiquetas, fill = etiqueta_item, y = estimate)) + 
-  geom_col() + 
-  facet_wrap(~class, nrow = 1) + 
-  scale_fill_viridis_d() + 
-  theme_minimal() +
-  theme(legend.position = "bottom") + 
-  labs(fill = "Respuesta", 
-       x = "¿Estaría dispuesto o no estaría dispuesto a
-       permitir que en su casa vivieran personas ", 
-       y = "Probabilidad de respuesta por clase") + 
-  coord_flip()
 ```
 
 
@@ -177,7 +69,7 @@ Tabla atribuciones de pobreza 2019
 
 # Falta mejorar visualización de tabla
 
-furniture::table1(proc_cep_2019,
+furniture::table1(proc_data,
   "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
   test = TRUE,
   na.rm = FALSE,
@@ -189,6 +81,52 @@ kable_styling(latex_options = c("striped", "HOLD_position")) %>%
 #%>%
 #  save_kable("../Output/Tablas/at_pobreza_2019.html")
 
+```
+
+# Graficos
+
+## Percepción meritocrática
+
+### Esfuerzo
+
+```{r gf2,echo=FALSE, message=FALSE, warning=FALSE, results='asis',fig.cap = "Gráfico P9", fig.align='center', fig.pos='H'}
+frq(proc_data$pem_esfuerzos)
+
+
+proc_data %>% 
+  drop_na(pem_esfuerzos) %>%
+  ggplot(aes(pem_esfuerzos, group = año)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", vjust=-0.25, size=4) + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("Frecuencias relativas") +
+          facet_grid(~año) +    geom_text(aes(y = (..prop..),label = ifelse((..prop..)==0,2,scales::percent(..prop..))), stat="count", vjust=-0.25, size=4) + 
+  geom_text(aes(y = (..prop..),label =   ifelse((..prop..)==0,"",scales::percent((..prop..)))), stat="count", vjust=-0.25, size=4) + 
+  theme(panel.background = element_rect(fill = "transparent"), axis.text.x = element_blank(),axis.ticks.x=element_blank(),axis.title.x=element_blank()) + scale_fill_discrete(name = "Percepción de meritocracia basado en el esfuerzo", labels = c("No es importante", "No muy importante", "Bastante importante", "Muy importante", "Esencial")) 
+```
+
+### Inteligencia
+
+```{r gf3,echo=FALSE, message=FALSE, warning=FALSE, results='asis',fig.cap = "Gráfico P9", fig.align='center', fig.pos='H'}
+
+
+proc_data %>% 
+  drop_na(pem_inteligencia) %>%
+  ggplot(aes(pem_inteligencia, group = año)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", vjust=-0.25, size=4) + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("Frecuencias relativas") +
+          facet_grid(~año) +    geom_text(aes(y = (..prop..),label = ifelse((..prop..)==0,2,scales::percent(..prop..))), stat="count", vjust=-0.25, size=4) + 
+  geom_text(aes(y = (..prop..),label =   ifelse((..prop..)==0,"",scales::percent((..prop..)))), stat="count", vjust=-0.25, size=4) + 
+  theme(panel.background = element_rect(fill = "transparent"), axis.text.x = element_blank(),axis.ticks.x=element_blank(),axis.title.x=element_blank()) + scale_fill_discrete(name = "Percepción de meritocracia basado en inteligencia", labels = c("No es importante", "No muy importante", "Bastante importante", "Muy importante", "Esencial")) 
+```
+
+# Tabla de correlación entre preferencias de meritocracia 
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+cor_percep <- proc_data %>% dplyr::select(pem_esfuerzos,pem_inteligencia)
+tab_corr(cor_percep,
+         triangle = "lower",
+         encoding = "Windows-1252") 
 ```
 
 Gráfico (fail)
@@ -249,7 +187,7 @@ ggplot(proc_data,aes(x=Att_p1)) +
 #p + geom_bar()
 ```
 
-Tabla atribuciones de riqueza 2019
+# Tabla atribuciones de riqueza 2019
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
@@ -271,21 +209,49 @@ kable_styling(latex_options = c("striped", "HOLD_position")) %>%
 # Análisis datos 2000, 2009 y 2019    
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-proc_cep$at_pobreza1<-haven::as_factor(proc_cep$at_pobreza1)
-proc_cep$at_pobreza2<-haven::as_factor(proc_cep$at_pobreza2)
-
+proc_cep$at_pobreza1<-as.factor(proc_cep$at_pobreza1)
+proc_cep$at_pobreza2<-as.factor(proc_cep$at_pobreza2)
+proc_cep$at_riqueza1-as.factor(proc_cep$at_riqueza1)
+proc_cep$at_riqueza2-as.factor(proc_cep$at_riqueza2)
 
 furniture::table1(proc_cep,
-  "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = T,
+  "Primera mención Atribuciones de pobreza" = at_pobreza1, "Segunda mención Atribuciones de pobreza" = at_pobreza2,bold = TRUE,
   splitby = ~año,
   test = TRUE,
   na.rm = FALSE,
   format_number = TRUE) -> tab11
 
+furniture::table1(proc_data,
+  "Primera mención Atribuciones de pobreza" = Att_p1, "Segunda mención Atribuciones de pobreza" = Att_p2,bold = TRUE,
+  splitby = ~año,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab_pob
+
+furniture::table1(proc_cep,
+  "Primera mención Atribuciones de riqueza" = at_riqueza1, "Segunda mención Atribuciones de riqueza" = at_riqueza2,bold = TRUE,
+  splitby = ~año,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab12
+
+furniture::table1(proc_data,
+  "Primera mención Atribuciones de riqueza" = Att_r1, "Segunda mención Atribuciones de riqueza" = Att_r2,bold = TRUE,
+  splitby = ~año,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab_riq
+
 table_format = if(is_html_output()) {
   "html"
 } else if(is_latex_output()) {
   "latex"
+}
+
+table_format2 = if(is_html_output()) {
+  T
+} else if(is_latex_output()) {
+  F
 }
 ```
 
@@ -293,14 +259,68 @@ table_format = if(is_html_output()) {
 
 # Intento de tabla 1
 
-kbl(tab11, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
-kable_styling(latex_options = c("striped", "HOLD_position")) %>%
-  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T) 
-#%>%
-#  save_kable("../Output/Tablas/atribuciones_tres_años.html")
+kbl(tab11,table_format, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm") #%>%
+#  save_kable("../Output/Tablas/atribuciones_pobreza_tres_años.html")
 
 
 ```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+# Intento de tabla 1
+
+kbl(tab_pob,table_format, caption = "Atribuciones de pobreza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm") #%>%
+#  save_kable("../Output/Tablas/atribuciones_pobreza_interna_externa.html")
+
+
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+kbl(tab12,table_format, caption = "Atribuciones de riqueza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm") %>%
+  save_kable("../Output/Tablas/atribuciones_riqueza_tres_años.html")
+
+
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+
+# Intento de tabla 1
+
+kbl(tab_riq,table_format, caption = "Atribuciones de riqueza", "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm") #%>%
+#  save_kable("../Output/Tablas/atribuciones_pobreza_interna_externa.html")
+
+
+```
+
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 
@@ -373,15 +393,89 @@ write2html(
 
 ```
 
+## Tablas meritocracia 3 años
+
+### Aparecen respuestas como categorica
+
+```{r sumt, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
+basecor<- proc_data %>% dplyr::select(pem_esfuerzos,pem_inteligencia,pref_responsabilidad,pref_educacion,pref_trabajo,año)
+
+dfsum<- dfSummary(basecor,
+               plain.ascii = FALSE,
+               style = "grid",
+               tmp.img.dir = "./tmp",
+               graph.magnif = 0.75,
+               headings = F,  # encabezado
+               varnumbers = F, # num variable
+               labels.col = T, # etiquetas
+               na.col = F,    # missing
+               graph.col = F, # plot
+               valid.col = FALSE, # n valido
+               col.widths = c(5,10,10,10,10)
+               )
+dfsum$Variable <- NULL # delete variable column
+
+print(dfsum)
+
+basecor$pem_esfuerzos<-as.numeric(basecor$pem_esfuerzos)
+
+basecor %>% tbl_summary(by = año,
+    statistic = list(all_continuous() ~ "{mean} ({sd})",
+    all_categorical() ~ "{n} / {N} ({p}%)"),
+    digits = all_continuous() ~ 2) %>% add_p()
+```
+
+### Aparecen promedios (SE UTILIZA EN AVANCE 1)
+
+```{r tab-descmerit, echo=FALSE}
+kbl(tab_merit,table_format, caption = cap5, "html", booktabs = T) %>%
+kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm") #%>%
+#  save_kable("../Output/Tablas/atribuciones_pobreza_interna_externa.html")
+```
+
+# Graficos
+
+## Crear data frame para gráfico de atribuciones internas
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-## Forma de importar tabla
-#### No me funcionó: tildes no son leídas
+graf_att_pob<-proc_data %>% dplyr::select(Att_p1,Att_p2)
+graf_att_riq<-proc_data %>% dplyr::select(Att_r1,Att_r2)
+graf_att<-proc_data %>% dplyr::select(Att_p1,Att_p2,Att_r1,Att_r2)
+x0<-rep(c(1,2,3,4),each=4064)
+x1<-rep(c(1,2),each=4064)
+graf_att<-data.frame(x=unlist(graf_att))
+graf_att_pob<-data.frame(x=unlist(graf_att_pob))
+graf_att_riq<-data.frame(x=unlist(graf_att_riq))
 
-tmp <- URLencode(paste(readLines("../Output/Tablas/at_pobreza_2019.html"), collapse="\n"))
+graf_att["orden_respuesta"] <- x0
+graf_att_pob["orden_respuesta"] <- x1
+graf_att_riq["orden_respuesta"] <- x1
 
-cat('<iframe src="data:text/html;charset=UTF-8,', tmp ,
-    '" style="border: none; seamless:seamless; width: 800px; height: 200px"></iframe>')
+graf_att["año"] <- proc_data$año
+graf_att_pob["año"] <- proc_data$año
+graf_att_riq["año"] <- proc_data$año
+
+graf_att<-graf_att[!(graf_att$x=="atribucion externa"),]
+
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+
+ graf_att %>%
+  ggplot(aes(año, group = orden_respuesta)) + 
+          geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", vjust=-0.25, size=4) + 
+          scale_y_continuous(labels=scales::percent) +
+          ylab("Frecuencias relativas") +
+          facet_grid(~orden_respuesta) +
+  theme(panel.background = element_rect(fill = "transparent"), axis.text.x = element_blank(),axis.ticks.x=element_blank(),axis.title.x=element_blank()) + scale_fill_discrete(name = "", labels = c("2000", "2009", "2019")) 
+ 
+frq(graf_att$orden_respuesta)
 ```
 
 

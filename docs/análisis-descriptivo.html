@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>4.1 Análisis descriptivo | Tesis de grado</title>
   <meta name="description" content="4.1 Análisis descriptivo | Tesis de grado" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="4.1 Análisis descriptivo | Tesis de grado" />
   <meta property="og:type" content="book" />
@@ -24,6 +24,7 @@
 <meta name="author" content="Sebastián Cortínez Rojas" />
 
 
+<meta name="date" content="2021-06-08" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +32,8 @@
   
   
 <link rel="prev" href="análisis.html"/>
-<link rel="next" href="modelos.html"/>
+<link rel="next" href="análisis-multivariado.html"/>
+<script src="libs/header-attrs-2.7/header-attrs.js"></script>
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
@@ -49,24 +51,27 @@
 
 
 
-<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
-<link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<link href="libs/bsTable-3.3.7/bootstrapTable.min.css" rel="stylesheet" />
+<script src="libs/bsTable-3.3.7/bootstrapTable.js"></script>
 
 
 <style type="text/css">
-code.sourceCode > span { display: inline-block; line-height: 1.25; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-code.sourceCode > span:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -86,7 +91,7 @@ pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-le
 div.sourceCode
   {   }
 @media screen {
-code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -119,6 +124,29 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 
@@ -137,27 +165,48 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Resumen</a></li>
 <li class="chapter" data-level="" data-path="agradecimientos.html"><a href="agradecimientos.html"><i class="fa fa-check"></i>Agradecimientos</a></li>
-<li class="chapter" data-level="1" data-path="introducción-tesisfacsodown.html"><a href="introducción-tesisfacsodown.html"><i class="fa fa-check"></i><b>1</b> Introducción: tesisfacsodown</a><ul>
-<li class="chapter" data-level="1.1" data-path="requisitos.html"><a href="requisitos.html"><i class="fa fa-check"></i><b>1.1</b> Requisitos</a></li>
-<li class="chapter" data-level="1.2" data-path="pasos.html"><a href="pasos.html"><i class="fa fa-check"></i><b>1.2</b> Pasos</a></li>
-<li class="chapter" data-level="1.3" data-path="algunos-detalles-adicionales.html"><a href="algunos-detalles-adicionales.html"><i class="fa fa-check"></i><b>1.3</b> Algunos detalles adicionales:</a></li>
-<li class="chapter" data-level="1.4" data-path="publicación-web-y-versionamiento.html"><a href="publicación-web-y-versionamiento.html"><i class="fa fa-check"></i><b>1.4</b> Publicación web y versionamiento</a></li>
+<li class="chapter" data-level="1" data-path="introducción.html"><a href="introducción.html"><i class="fa fa-check"></i><b>1</b> Introducción:</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="la-sostenida-desigualdad-socioeconómica-en-chile-.html"><a href="la-sostenida-desigualdad-socioeconómica-en-chile-.html"><i class="fa fa-check"></i><b>1.1</b> La sostenida desigualdad socioeconómica en Chile.</a></li>
+<li class="chapter" data-level="1.2" data-path="cambios-culturales-y-de-subjetividades-en-la-sociedad-chilena.html"><a href="cambios-culturales-y-de-subjetividades-en-la-sociedad-chilena.html"><i class="fa fa-check"></i><b>1.2</b> Cambios culturales y de subjetividades en la sociedad chilena</a></li>
+<li class="chapter" data-level="1.3" data-path="objetivos-de-investigación.html"><a href="objetivos-de-investigación.html"><i class="fa fa-check"></i><b>1.3</b> Objetivos de investigación</a></li>
+<li class="chapter" data-level="1.4" data-path="estructura-de-investigación.html"><a href="estructura-de-investigación.html"><i class="fa fa-check"></i><b>1.4</b> Estructura de investigación</a></li>
 </ul></li>
-<li class="chapter" data-level="2" data-path="antecedentes-conceptuales-y-empíricos.html"><a href="antecedentes-conceptuales-y-empíricos.html"><i class="fa fa-check"></i><b>2</b> Antecedentes conceptuales y empíricos</a><ul>
-<li class="chapter" data-level="2.1" data-path="concepto-principal-explanandum-objeto-de-estudio.html"><a href="concepto-principal-explanandum-objeto-de-estudio.html"><i class="fa fa-check"></i><b>2.1</b> (concepto principal - explanandum - objeto de estudio)</a></li>
-<li class="chapter" data-level="2.2" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html"><i class="fa fa-check"></i><b>2.2</b> Factores asociados a objeto de estudio</a><ul>
-<li class="chapter" data-level="2.2.1" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html#factor-1"><i class="fa fa-check"></i><b>2.2.1</b> Factor 1</a></li>
-<li class="chapter" data-level="2.2.2" data-path="factores-asociados-a-objeto-de-estudio.html"><a href="factores-asociados-a-objeto-de-estudio.html#factor-n"><i class="fa fa-check"></i><b>2.2.2</b> Factor N</a></li>
+<li class="chapter" data-level="2" data-path="antecedentes.html"><a href="antecedentes.html"><i class="fa fa-check"></i><b>2</b> Antecedentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html"><i class="fa fa-check"></i><b>2.1</b> Atribuciones de pobreza y riqueza</a>
+<ul>
+<li class="chapter" data-level="2.1.1" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html#conceptualización-y-medición-de-atribuciones"><i class="fa fa-check"></i><b>2.1.1</b> Conceptualización y medición de atribuciones</a></li>
+<li class="chapter" data-level="2.1.2" data-path="atribuciones-de-pobreza-y-riqueza.html"><a href="atribuciones-de-pobreza-y-riqueza.html#antecedentes-de-las-atribuciones-de-pobreza-y-riqueza"><i class="fa fa-check"></i><b>2.1.2</b> Antecedentes de las atribuciones de pobreza y riqueza</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="meritocracia.html"><a href="meritocracia.html"><i class="fa fa-check"></i><b>2.2</b> Meritocracia</a>
+<ul>
+<li class="chapter" data-level="2.2.1" data-path="meritocracia.html"><a href="meritocracia.html#un-concepto-controversial"><i class="fa fa-check"></i><b>2.2.1</b> Un concepto controversial</a></li>
+<li class="chapter" data-level="2.2.2" data-path="meritocracia.html"><a href="meritocracia.html#las-creencias-meritocráticas-en-las-ciencias-sociales"><i class="fa fa-check"></i><b>2.2.2</b> Las creencias meritocráticas en las ciencias sociales</a></li>
+<li class="chapter" data-level="2.2.3" data-path="meritocracia.html"><a href="meritocracia.html#creencias-meritocráticas-y-atribuciones-de-pobreza-y-riqueza"><i class="fa fa-check"></i><b>2.2.3</b> Creencias meritocráticas y atribuciones de pobreza y riqueza</a></li>
+<li class="chapter" data-level="2.2.4" data-path="meritocracia.html"><a href="meritocracia.html#antecedentes-en-la-relación-entre-meritocracia-y-atribuciones-de-pobreza"><i class="fa fa-check"></i><b>2.2.4</b> Antecedentes en la relación entre meritocracia y atribuciones de pobreza</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="metodología.html"><a href="metodología.html"><i class="fa fa-check"></i><b>3</b> Metodología</a><ul>
+<li class="chapter" data-level="3" data-path="datos-variables-y-métodos.html"><a href="datos-variables-y-métodos.html"><i class="fa fa-check"></i><b>3</b> Datos, variables y métodos</a>
+<ul>
 <li class="chapter" data-level="3.1" data-path="datos.html"><a href="datos.html"><i class="fa fa-check"></i><b>3.1</b> Datos</a></li>
-<li class="chapter" data-level="3.2" data-path="variables.html"><a href="variables.html"><i class="fa fa-check"></i><b>3.2</b> Variables</a></li>
+<li class="chapter" data-level="3.2" data-path="variables.html"><a href="variables.html"><i class="fa fa-check"></i><b>3.2</b> Variables</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="variables.html"><a href="variables.html#variables-dependientes"><i class="fa fa-check"></i><b>3.2.1</b> Variables dependientes</a></li>
+<li class="chapter" data-level="3.2.2" data-path="variables.html"><a href="variables.html#variables-independientes"><i class="fa fa-check"></i><b>3.2.2</b> Variables independientes</a></li>
+<li class="chapter" data-level="3.2.3" data-path="variables.html"><a href="variables.html#variables-de-control"><i class="fa fa-check"></i><b>3.2.3</b> Variables de control</a></li>
+</ul></li>
 <li class="chapter" data-level="3.3" data-path="métodos.html"><a href="métodos.html"><i class="fa fa-check"></i><b>3.3</b> Métodos</a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="análisis.html"><a href="análisis.html"><i class="fa fa-check"></i><b>4</b> Análisis</a><ul>
-<li class="chapter" data-level="4.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html"><i class="fa fa-check"></i><b>4.1</b> Análisis descriptivo</a></li>
-<li class="chapter" data-level="4.2" data-path="modelos.html"><a href="modelos.html"><i class="fa fa-check"></i><b>4.2</b> Modelos</a></li>
+<li class="chapter" data-level="4" data-path="análisis.html"><a href="análisis.html"><i class="fa fa-check"></i><b>4</b> Análisis</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html"><i class="fa fa-check"></i><b>4.1</b> Análisis descriptivo</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html#variable-dependiente"><i class="fa fa-check"></i><b>4.1.1</b> Variable dependiente</a></li>
+<li class="chapter" data-level="4.1.2" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html#analisis-de-clases-latentes"><i class="fa fa-check"></i><b>4.1.2</b> Analisis de clases latentes</a></li>
+<li class="chapter" data-level="4.1.3" data-path="análisis-descriptivo.html"><a href="análisis-descriptivo.html#variables-independientes-1"><i class="fa fa-check"></i><b>4.1.3</b> Variables independientes</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="análisis-multivariado.html"><a href="análisis-multivariado.html"><i class="fa fa-check"></i><b>4.2</b> Análisis multivariado</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="conclusiones.html"><a href="conclusiones.html"><i class="fa fa-check"></i><b>5</b> Conclusiones</a></li>
 <li class="chapter" data-level="" data-path="bibliografía.html"><a href="bibliografía.html"><i class="fa fa-check"></i>Bibliografía</a></li>
@@ -181,8 +230,602 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="análisis-descriptivo" class="section level2">
+<div id="análisis-descriptivo" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Análisis descriptivo</h2>
+<div id="variable-dependiente" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span> Variable dependiente</h3>
+<div style="text-align: justify">
+
+
+
+<table class="table table-striped table-bordered" style="font-size: 16px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+<span id="tab:tab-descpob">Tabla 4.1: </span>Atribuciones de pobreza
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Respuestas
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Descrpitivos
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+.
+</th>
+<th style="text-align:left;">
+2000
+</th>
+<th style="text-align:left;">
+2009
+</th>
+<th style="text-align:left;">
+2019
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1385
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1394
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1285
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Primera mención Atribuciones de pobreza
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion externa
+</td>
+<td style="text-align:left;width: 2 cm; ">
+335 (24.2%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+559 (40.1%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+438 (34.1%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion interna
+</td>
+<td style="text-align:left;width: 2 cm; ">
+1,050 (75.8%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+835 (59.9%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+847 (65.9%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+NA
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Segunda mención Atribuciones de pobreza
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion externa
+</td>
+<td style="text-align:left;width: 2 cm; ">
+1,012 (73.1%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+728 (52.2%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+653 (50.8%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion interna
+</td>
+<td style="text-align:left;width: 2 cm; ">
+373 (26.9%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+666 (47.8%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+632 (49.2%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+NA
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+</tr>
+</tbody>
+</table>
+<p>En la Tabla N° <a href="análisis-descriptivo.html#tab:tab-descpob">4.1</a> se observan descriptivos univariados de las atribuciones de pobreza en los años 2000, 2009 y 2019. Sobre la primera mención en atribuciones, se observa una caída en el porcentaje de respuesta sobre atribuciones internas del 2000 al 2009, en donde para el año 2000 un 75,8% mencionó una atribución interna en su primera mención, mientras que para el 2009 lo hizo un 59,9%. Sin embargo, las respuestas en atribuciones internas vuelven a subir para el año 2019, siendo el porcentaje de respuestas internas para este año un 65,9%. Respecto a la segunda mención, se destacan dos tendencias en las respuestas: en primer lugar, las atribuciones internas experimentan un aumento sostenido en el 2000, 2009 y 2019, en donde se observa que los porcentajes de respuesta son de un 26,9%, 47,8% y 49,% respectivamente. En segundo lugar, existe una tendencia a la disminución en las atribuciones externas, siendo de un 73,1% para el 2000, 52,2% para el 2009 y de 50,8% para el 2019.</p>
+<table class="table table-striped table-bordered" style="font-size: 16px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+<span id="tab:tab-descriq">Tabla 4.2: </span>Atribuciones de riqueza
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Respuestas
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Descrpitivos
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+.
+</th>
+<th style="text-align:left;">
+2000
+</th>
+<th style="text-align:left;">
+2009
+</th>
+<th style="text-align:left;">
+2019
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1385
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1394
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1285
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Primera mención Atribuciones de riqueza
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion externa
+</td>
+<td style="text-align:left;width: 2 cm; ">
+507 (36.6%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+529 (37.9%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+480 (37.4%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion interna
+</td>
+<td style="text-align:left;width: 2 cm; ">
+878 (63.4%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+865 (62.1%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+805 (62.6%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+NA
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Segunda mención Atribuciones de riqueza
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion externa
+</td>
+<td style="text-align:left;width: 2 cm; ">
+821 (59.3%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+644 (46.2%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+601 (46.8%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+atribucion interna
+</td>
+<td style="text-align:left;width: 2 cm; ">
+564 (40.7%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+750 (53.8%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+684 (53.2%)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+NA
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+0 (0%)
+</td>
+</tr>
+</tbody>
+</table>
+<p>Respecto de las atribuciones de riqueza, en la Tabla N° <a href="análisis-descriptivo.html#tab:tab-descriq">4.2</a> se pueden observar los porcentajes de respuesta entre atribuciones internas y externas para los años 2000, 2009 y 2019. Sobre la primera mención de atribuciones, se observa un patrón en donde se mantienen relativamente estables los procentajes de respuesta a lo largo de los tres años tanto para atribuciones internas como externas. Un elemento a destacar es que para los tres años las respuestas internas son considerablemente más altas a las externas, siendo las primeras casi el doble respecto de las segundas. Sobre la segunda mención, se observan cambios entre el año 2000 y 2009, pero se mantienen estables entre 2009 y 2019. De manera más específica, las atribuciones externas disminuyen de 59,3% a un 46,2% entre el 2000 y el 2009, pero para el 2019 se mantiene relativamente estable, presentando un 46,8% de las respuestas. Por el otro lado, en cuanto a las atribuciones internas, se observa un aumento de respuestas entre el 2000 y el 2009, pasando de un 40,7% a un 53,8%, respectivamente, pero se mantiene en un 53,2% para el 2019.</p>
+</div>
+<div id="analisis-de-clases-latentes" class="section level3" number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span> Analisis de clases latentes</h3>
+<div style="text-align: justify">
+
+<p>Para la selección de clases se consideraron los estadísticos BIC y AIC, en donde los valores más bajos indicarían un mejor de ajuste de las clases respecto de las observaciones reales (CITAR). Bajo esta premisa, los modelos LCA con mejores resultados fueron de dos y tres clases. Para el modelo de dos clases se obtuvo un BIC de 21472.32 y un AIC de 21415.53. Para el modelo de tres clases se obtuvo un BIC de 21464.48 y un AIC de 21376.14. Con más de tres clases los modelos comienzan a presentar problemas.</p>
+<p>Si bien el estadístico BIC presenta mejores resultados para el modelo de dos clases, tanto el estadístico BIC como AIC presentan resultados similares para el modelo de dos y tres clases, siendo incluso mayor los resultados del AIC para el modelo de tres clases. En este sentido, la elección del modelo de tres clases se fundamenta primordialmente en los antecedentes sobre atribuiciones de pobreza y riqueza, la cual apunta a la existencia de tres categorías, siendo estas las clases externas, ambivalentes e internas. Además ello entrega más herramientas para la posterior comparación entre investigaciones.</p>
+<div class="figure" style="text-align: center"><span id="fig:classes"></span>
+<img src="tesis_files/figure-html/classes-1.png" alt="Correlaciones de Pearson para percepciones y preferencias meritocráticas" width="80%"  />
+<p class="caption">
+Figura 4.1: Correlaciones de Pearson para percepciones y preferencias meritocráticas
+</p>
+</div>
+<p>En la Figura N° <a href="análisis-descriptivo.html#fig:classes">4.1</a> se resume el modelo de tres clases. Posterior a la creación del modelo, se extraen las clases predichas para cada observación, siendo esta la variable dependiente final para los posteriores modelos.</p>
+</div>
+<div id="variables-independientes-1" class="section level3" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span> Variables independientes</h3>
+<div style="text-align: justify">
+
+
+<table>
+<colgroup>
+<col width="45%" />
+<col width="29%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Label</th>
+<th>Stats / Values</th>
+<th>Freqs (% of Valid)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Percepcion de merito esfuerzo</td>
+<td>Mean (sd) : 3.5 (1.1)<br />
+min &lt; med &lt; max:<br />
+1 &lt; 4 &lt; 5<br />
+IQR (CV) : 1 (0.3)</td>
+<td>1 : 197 ( 4.8%)<br />
+2 : 785 (19.3%)<br />
+3 : 650 (16.0%)<br />
+4 : 1677 (41.3%)<br />
+5 : 755 (18.6%)</td>
+</tr>
+<tr class="even">
+<td>Percepcion de merito inteligencia y
+capacidades</td>
+<td>Mean (sd) : 3.6 (1.1)<br />
+min &lt; med &lt; max:<br />
+1 &lt; 4 &lt; 5<br />
+IQR (CV) : 1 (0.3)</td>
+<td>1 : 139 ( 3.4%)<br />
+2 : 660 (16.2%)<br />
+3 : 655 (16.1%)<br />
+4 : 1840 (45.3%)<br />
+5 : 770 (18.9%)</td>
+</tr>
+<tr class="odd">
+<td>Preferencia meritocracia:
+responsabilidad</td>
+<td>Mean (sd) : 4 (0.7)<br />
+min &lt; med &lt; max:<br />
+1 &lt; 4 &lt; 5<br />
+IQR (CV) : 0 (0.2)</td>
+<td>1 : 24 ( 0.6%)<br />
+2 : 63 ( 1.6%)<br />
+3 : 572 (14.1%)<br />
+4 : 2447 (60.2%)<br />
+5 : 958 (23.6%)</td>
+</tr>
+<tr class="even">
+<td>Preferencia meritocracia: educacion</td>
+<td>Mean (sd) : 4 (0.8)<br />
+min &lt; med &lt; max:<br />
+1 &lt; 4 &lt; 5<br />
+IQR (CV) : 0 (0.2)</td>
+<td>1 : 26 ( 0.6%)<br />
+2 : 133 ( 3.3%)<br />
+3 : 685 (16.9%)<br />
+4 : 2317 (57.0%)<br />
+5 : 903 (22.2%)</td>
+</tr>
+<tr class="odd">
+<td>Preferencia meritocracia: trabajo</td>
+<td>Mean (sd) : 4 (0.7)<br />
+min &lt; med &lt; max:<br />
+1 &lt; 4 &lt; 5<br />
+IQR (CV) : 0 (0.2)</td>
+<td>1 : 11 ( 0.3%)<br />
+2 : 71 ( 1.7%)<br />
+3 : 733 (18.0%)<br />
+4 : 2335 (57.5%)<br />
+5 : 914 (22.5%)</td>
+</tr>
+</tbody>
+</table>
+<p>En la tabla anterior se observan los descriptivos para las variables de percepción y preferencias meritocráticas. Para las percepciones, en donde se responde en una escala del 1 al 5 sobre la importancia de (1) el trabajo duro para surgir en la vida y (2) el tener un buen nivel de educación para surgir en la vida, se observa en ambas variables una media superior a 3, lo cual indica una tendencia media-alta en la percepción meritocrática en la sociedad chilena. Para las preferencias meritocráticas, en donde se responde con la misma escala de importancia a la pregunta cuán importante debería ser (1) el nivel de responsabilidad en el trabajo, (2) los años dedicados a educación y capacitacion y (3) lo bien que realiza su trabajo al momento de decidirse cuánto debería ganar la gente. Para las tres variables se tiene una media de 4, por lo que existe cierto consenso en la población en la preferencia de mecanismos meritocráticos a la hora de decidir las ganancias monetarias de la gente.</p>
+<p>Se debe destacar que las percepciones meritocráticas presentan una desviación estándar (sd) más alta que para el caso de las preferencias meritocráticas. Con esto se puede concluir que existe mayor homogeneidad a la hora de responder sobre las preguntas de preferencia meritocrática, respecto de las percepciones meritocráticas.</p>
+<table class="table table-striped table-bordered" style="font-size: 16px; margin-left: auto; margin-right: auto;">
+<caption style="font-size: initial !important;">
+<span id="tab:tab-descmerit2">Tabla 4.3: </span>Percepciones y preferencias meritocraticas en el tiempo
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="1">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Respuestas
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Descrpitivos
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+.
+</th>
+<th style="text-align:left;">
+2000
+</th>
+<th style="text-align:left;">
+2009
+</th>
+<th style="text-align:left;">
+2019
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1385
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1394
+</td>
+<td style="text-align:left;width: 2 cm; ">
+n = 1285
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Percepcion de merito esfuerzo
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+2.9 (1.2)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+3.8 (1.0)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+3.8 (1.0)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Percepcion de merito inteligencia y capacidades
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+2.9 (1.1)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.1 (0.8)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+3.8 (0.9)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Preferencia meritocracia: responsabilidad
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.1 (0.7)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.1 (0.6)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.0 (0.8)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Preferencia meritocracia: educacion
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.0 (0.7)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.0 (0.7)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+3.8 (0.8)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+Preferencia meritocracia: trabajo duro
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 4 cm; ">
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.0 (0.7)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.1 (0.7)
+</td>
+<td style="text-align:left;width: 2 cm; ">
+4.0 (0.8)
+</td>
+</tr>
+</tbody>
+</table>
+<p>En la Tabla N° <a href="análisis-descriptivo.html#tab:tab-descmerit2">4.3</a> se observan la media seguida de la desviasión estándar entre paréntesis para las variables independientes en los tres años. De dicha tabla se destaca un aumento en las percepciones meritocráticas entre el año 2000 y el 2009, pasando de un 2,9 a un 3,8 en la variable de percepción meritocrática basado en el esfuerzo, y de un 2,9 a un 4,1 en la percepción meritocrática basado en inteligencia y capacidades. En el año 2019 las medias se mantiene relativamente estables respecto de la fecha anterior, en donde ambas variables presentan una media de 3,8.</p>
+<p>Para el caso de las preferencias meritocráticas, las tres variables se mantienen estables a lo largo de los años 2000, 2009 y 2019, con valores cercanos al 4.</p>
+<div class="figure" style="text-align: center"><span id="fig:matpearson"></span>
+<img src="tesis_files/figure-html/matpearson-1.png" alt="Correlaciones de Pearson para percepciones y preferencias meritocráticas" width="100%"  />
+<p class="caption">
+Figura 4.2: Correlaciones de Pearson para percepciones y preferencias meritocráticas
+</p>
+</div>
+<p>En la Figura N° <a href="análisis-descriptivo.html#fig:matpearson">4.2</a> se observan las correlaciones de pearson entre las variables independientes. Los niveles de correlación entre las variables de percepción meritocrática basada en el esfuerzo y percepción meritocrática basado en inteligencia y capacidades son positivas y medias-altas. De lo anterior se puede concluir que pertenecen a un mismo constructo (o que al menos se diferencian del constructo de preferencias meritocráticas, con las cuales tienen una correlación casi nula), pero que de todas maneras vale la pena considerar ambas variables por separadas en un posible modelo de regresión. Por otra parte, las tres variables de preferencias meritocráticas también presentan niveles de correlación positivas y medianas entre ellas. Ello indica una posible pertenencia al mismo constructo de preferencias meritocráticas, pero al igual que con las percecpiones, es conveniente considerar la influencia de las tres variables por separado sobre la variable dependiente.</p>
+</div>
 </div>
             </section>
 
@@ -190,7 +833,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 <a href="análisis.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modelos.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="análisis-multivariado.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -213,6 +856,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -240,6 +884,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

@@ -1,0 +1,123 @@
+---
+title: "regresiones ordinales"
+author: "Sebastián Cortinez"
+date: "19-05-2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+options(scipen=999) # valores sin notación científica
+#install.packages("pacman")
+library(pacman)
+#detach("package:memisc", unload = TRUE)
+#install.packages("devtools")
+if(!require(weatherData)) devtools::install_github("melff/memisc",subdir="pkg")
+if(!require(weatherData)) devtools::install_github("AlineTalhouk/Amisc")
+if(!require(weatherData)) pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
+#webshot::install_phantomjs()
+
+#  Cargar bbdd
+
+load("../Input/Data_proc/2019/data_naomit2019.RData")
+
+```
+
+# Regresiones con at. de pobreza y riqueza separadas (preclasificación estilo Bucca(2016))
+
+## Regresión multinomial
+
+### Atribuciones de pobreza
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+library(nnet)
+data_naomit2019$pob_attclass<-factor(data_naomit2019$pob_attclass)
+data_naomit2019$pob_attclass = factor(data_naomit2019$pob_attclass,
+                    levels=c("externa","ambivalente","interna"))
+frq(data_naomit2019$pob_attclass)
+
+# Set the reference group for pob_attclass
+data_naomit2019$pob_attclass <- relevel(
+data_naomit2019$pob_attclass, ref=3)
+
+summary(data_naomit2019)
+# Run the model
+mp0 <- multinom(pob_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=data_naomit2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(mp0)
+```
+
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+mp1 <- multinom(pob_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + sexo + ESS + nivel_educ, data=data_naomit2019)
+mp2 <- multinom(pob_attclass ~ pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+mp3 <- multinom(pob_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+mp4 <- multinom(pob_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos, data=data_naomit2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(list(mp1,mp2,mp3))
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(mp4)
+```
+
+Guardar tablas
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model8, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_pob_mean.html")
+webshot("multireg_pob_mean.html")
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model9, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_pob_sep.html")
+webshot("multireg_pob_sep.html")
+```
+
+### Atribuciones de riqueza
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+data_naomit2019$riq_attclass<-factor(data_naomit2019$riq_attclass)
+data_naomit2019$riq_attclass = factor(data_naomit2019$riq_attclass,
+                    levels=c("externa","ambivalente","interna"))
+frq(data_naomit2019$riq_attclass)
+
+# Set the reference group for riq_attclass to be 1
+data_naomit2019$riq_attclass <- relevel(
+data_naomit2019$riq_attclass, ref=3)
+
+summary(data_naomit2019)
+# Run the model
+mr0 <- multinom(riq_attclass ~ pmerit + prefmerit + sexo + ESS + nivel_educ, data=data_naomit2019)
+mr1 <- multinom(riq_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + sexo + ESS + nivel_educ, data=data_naomit2019)
+mr2 <- multinom(riq_attclass ~  pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+mr3 <- multinom(riq_attclass ~ pem_inteligencia + pem_ambicion + pem_esfuerzos + 
+                 pref_responsabilidad + pref_educacion + pref_trabajo + sexo + ESS + nivel_educ, data=data_naomit2019)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(mr1)
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+texreg::screenreg(mr2)
+```
+
+Guardar tablas
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model10, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_riq_mean.html")
+webshot("multireg_riq_mean.html")
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+sjPlot::tab_model(model11, show.ci=FALSE, encoding = "Windows-1252", file = "../Output/Modelos_regresion/multireg_riq_sep.html")
+webshot("multireg_riq_sep.html")
+```

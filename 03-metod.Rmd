@@ -1,24 +1,134 @@
+```{r include=FALSE}
+pacman::p_load(dplyr, kableExtra, knitr)
+load("Input/Data_proc/proc_cep.RData")
+```
+
+```{r include=FALSE}
+table_format = if(is_html_output()) {
+  "html"
+} else if(is_latex_output()) {
+  "latex"
+}
+table_format2 = if(is_html_output()) {
+  T
+} else if(is_latex_output()) {
+  F
+}
+```
+
 # Datos, variables y métodos
 
 ## Datos
 
-Para cumplir con el objetivo general se utilizan los datos correspondientes a la Encuesta Nacional de Opinión Pública Nº 39 (Marzo-Abril 2000), N° 59 (Mayo-Junio 2009) y N° 83 (Mayo 2019) llevada a cabo por el Centro de Estudios Públicos (CEP) llevadas a cabo por el Centro de Estudios Públicos (CEP). La base de datos del 2000 tiene una muestra compuesta por 1380 encuestados. La del 2009.. Por último, la del 2019... Los procesos de selección de las muestras son probabilísticos, por conglomerados y de multietapas.
+<div style="text-align: justify">
+
+Para cumplir con el objetivo general se utilizan los datos correspondientes a la Encuesta Nacional de Opinión Pública Nº 39 (Marzo-Abril 2000), N° 59 (Mayo-Junio 2009) y N° 83 (Mayo 2019) llevada a cabo por el Centro de Estudios Públicos (CEP). La base de datos del 2000 tiene una muestra compuesta por 1380 encuestados. Para el 2009, la muestra 1505 casos. Por último, para el 2019 la muestra cuenta con 1380 casos. Los procesos de selección de las muestras son probabilísticos, por conglomerados y de multietapas. 
+
+Una de las razones por la cual se decidió trabajar con esas tres bases de datos en específico se debe a que para los tres años la encuesta CEP incluyó una batería de preguntas de la International Social Survey Programme (ISSP). De esta forma, las variables dependientes -atribuciones de pobreza y riqueza- vienen incluidas en la encuesta original de CEP, mientras que las variables independientes -percepciones y preferencias meritocráticas- se incluyen en la batería de la ISSP. 
+
+Para realizar los análisis se combinaron las tres bases de datos, creando una columna que diferencia entre años (variable 'año'). De esta manera, la base de datos pasa a tomar forma de datos agrupados de sección transversal (o "pooled cross sectional data" en inglés), la cual tiene la particularidad -a diferencia de otros datos longitudinales- de que las observaciones no se repiten entre años.
 
 ## Variables
 
 ### Variables dependientes
 
-Las variables dependientes de la presente investigación son los distintos tipos de atribuciones hacia la pobreza y la riqueza. Para el caso de las causas de la pobreza, se utilizará la variable que corresponde a la siguiente pregunta: “Como usted sabe, en Chile hay personas que son pobres. ¿Cuáles de las alternativas de esta lista cree usted que son las dos causas más frecuentes de que estas personas sean pobres?”. A continuación, las y los encuestados debían seleccionar dos respuestas. La variable y respuestas aparecen en la **Tabla 1**.  
-Para el caso de las atribuciones de riqueza, se utiliza la variable correspondiente a la siguiente pregunta: “Como usted sabe, también en Chile hay personas que tienen éxito económico, es decir, ganan dinero suficiente para llevar una vida acomodada. ¿Cuál de las alternativas de esta lista cree usted que son las dos más importantes en el éxito económico de las personas?”. De igual manera, las y los encuestados seleccionaron dos respuestas. La variable y respuestas aparecen en la **Tabla 2**. 
+<div style="text-align: justify">
+
+Como se observa en la Tabla N° \@ref(tab:tab-dep), las variables dependientes de la presente investigación son los distintos tipos de atribuciones hacia la pobreza y la riqueza. Para el caso de las causas de la pobreza, se utilizará la variable que corresponde a la siguiente pregunta: “Como usted sabe, en Chile hay personas que son pobres. ¿Cuáles de las alternativas de esta lista cree usted que son las dos causas más frecuentes de que estas personas sean pobres?”. A continuación, las y los encuestados debían seleccionar dos respuestas. 
+
+En la tabla X se observan las atribuciones de riqueza, utilizando la siguiente pregunta: “Como usted sabe, también en Chile hay personas que tienen éxito económico, es decir, ganan dinero suficiente para llevar una vida acomodada. ¿Cuál de las alternativas de esta lista cree usted que son las dos más importantes en el éxito económico de las personas?”. De igual manera, las y los encuestados seleccionaron dos respuestas. 
+
+Este tipo de medición, a diferencia de preguntas con respuestas en forma de escala -por ejemplo escalas likert de acuerdo/desacuerdo o nunca/siempre-, presenta el problema de que limita la selección de múltiples alternativas. Cabe destacar que no existe una única forma de medir las atribuciones de pobreza y riqueza, lo cual genera limitaciones a la hora de comparar estudios.
+
+```{r include=FALSE}
+cap1 <- "Variables dependientes"
+# if (knitr::is_html_output()) {tb <- table_nums("tb",cap)} else {tb <- cap}
+```
+
+```{r tab-dep, echo=FALSE}
+tab01 <- read.csv(file = "Output/Tablas/table01.csv",header = 1,sep = ";",encoding = "UTF-8")
+cnames <- c("Tipo de atribución","Respuestas", "Clasificación respuestas")
+
+kable(tab01,table_format,booktabs = T, linesep = "",col.names = cnames, caption = cap1) %>%
+  kable_styling(
+    full_width = T,
+    latex_options = c("hold_position"),
+    position = "center",
+    font_size = 10,
+    bootstrap_options=c("striped", "bordered")) %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "8 cm") %>%
+  column_spec(column = 3,width = "3 cm") %>%
+  collapse_rows(columns = 1:2,valign = "middle")
+```
 
 ### Variables independientes
 
-Las principales variables independientes con las que se trabajará corresponden a las dimensiones de percepción y preferencias meritocráticas. Para cada una de ellas se consideró una serie de indicadores, en donde para las percepciones meritocráticas se enfatiza en la descripción de los participantes sobre cuán importante son distintos factores para surgir en la vida. Mientras que, para las preferencias meritocráticas, el énfasis está puesto en lo normativo, a lo cual se pregunta cuán importante deberían ser distintos factores para decidir cuánto debería ganar la gente. En la **Tabla 3** se observa la operacionalización de las variables de percepción y preferencia meritocráticas.
-Finalmente, se incluirán variables independientes y sociodemográficas como variables de control. Estas son: Sexo, Educación, Ingreso, Estatus Social Subjetivo, Orientación Política, Etnicidad. En la **Tabla 4** pueden observarse los estadísticos descriptivos básicos para las variables independientes y de control. Los resultados expuestos son anteriores a su ponderación, por lo que pueden variar respecto de los valores del encontrados en el Manual de Usuario Encuesta CEP N° 83. 
-Para la lectura de la **Tabla 4**, debe considerarse la codificación de algunas variables. Para Sexo, Hombre = 1 y Mujer = 2. Para Educación, "Primaria incompleta menos" = 1, "Primaria y secundaria baja" = 2, "Secundaria alta" = 3, "Terciaria ciclo corto" = 4, "Terciaria y Postgrado" = 5. Identificación política se categoriza en "Derecha" = 1, "Centro" = 2, "Izquierda" = 3, "Ninguno/independiente" = 4. Para Etnicidad, se ha dicotomizado, siendo la categoría “Pueblo originario" = 1, y "Ninguno" = 2. 
+<div style="text-align: justify">
 
-La variable "Ingreso" corresponde al rango de ingreso en el cual la/el entrevistado se encuentra. Debido a la dificultad de agrupar los rangos de todos los años en deciles, y de su tratamiento en los modelos, se opta por dividir arbitrariamente en seis grupos. Los cortes de salario hechos en estos grupos buscan asemejarse a los cortes de salarios de los grupos de deciles. El primer grupo se asemeja a los rangos del 1er 
+Para el caso de las variables independientes, se trabaja con dos variables principales, las cuales forman parte del constructo de las percepciones meritocráticas. Adicionalmente, se trabajará con tres variables que refieren a las preferencias meritocráticas a modo de control. Las variables sobre percepción meritocrática son preguntas que refieren al nivel de importancia de mecanismos meritocráticos para surgir en la vida. [^1] Mientras que para las preferencias meritocráticas se pregunta cuán importante deberían ser distintos factores para decidir cuánto debería ganar la gente. En la Tabla N° \@ref(tab:tab-indep) se observa la operacionalización de las variables de percepción y preferencia meritocráticas.
+
+```{r include=FALSE}
+cap2 <- "Variables independientes"
+# if (knitr::is_html_output()) {tb <- table_nums("tb",cap)} else {tb <- cap}
+```
+
+```{r tab-indep, echo=FALSE}
+tab02 <- read.csv(file = "Output/Tablas/table02.csv",header = 1,sep = ";",encoding = "UTF-8")
+cnames <- c("Concepto","Indicador", "Categorías de respuesta")
+
+kable(tab02,table_format,booktabs = T, linesep = "",col.names = cnames, caption = cap2) %>%
+  kable_styling(
+    full_width = T,
+    latex_options = c("hold_position"),
+    position = "center",
+    font_size = 10,
+    bootstrap_options=c("striped", "bordered")) %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "8 cm") %>%
+  column_spec(column = 3,width = "3 cm") %>%
+  collapse_rows(columns = 1:2,valign = "middle")
+```
+
+### Variables de control
+
+<div style="text-align: justify">
+
+Finalmente, se incluirán variables sociodemográficas como variables de control. Estas son: Sexo, Educación, Estatus Social Subjetivo y Orientación Política. En la Tabla N° \@ref(tab:tab-control) pueden observarse los estadísticos descriptivos básicos para las variables de control. 
+
+Debe considerarse la codificación de algunas variables. Para Sexo, Hombre = 1 y Mujer = 2. Para Educación, "Primaria incompleta menos" = 1, "Primaria y secundaria baja" = 2, "Secundaria alta" = 3, "Terciaria ciclo corto" = 4, "Terciaria y Postgrado" = 5. Identificación política se categoriza en "Derecha" = 1, "Centro" = 2, "Izquierda" = 3, "Ninguno/independiente" = 4. 
+
+
+```{r include=FALSE}
+cap3 <- "Variables de control"
+# if (knitr::is_html_output()) {tb <- table_nums("tb",cap)} else {tb <- cap}
+```
+
+```{r tab-control, echo=FALSE}
+tab03 <- read.csv(file = "Output/Tablas/table03.csv",header = 1,sep = ";",encoding = "UTF-8")
+cnames <- c("Concepto","Indicador", "Categorías de respuesta")
+
+kable(tab03,table_format,booktabs = T, linesep = "",col.names = cnames, caption = cap3) %>%
+  kable_styling(
+    full_width = T,
+    latex_options = c("hold_position"),
+    position = "center",
+    font_size = 10,
+    bootstrap_options=c("striped", "bordered")) %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "8 cm") %>%
+  column_spec(column = 3,width = "3 cm") %>%
+  collapse_rows(columns = 1:2,valign = "middle")
+```
 
 ## Métodos
 
-Se elaborarán clases latentes para las combinaciones de atribuciones de pobreza y riqueza. El posterior análisis se realizará a partir de modelos multivariados que incorporen las atribuciones de pobreza y riqueza a partir de los resultados del modelo de clases latentes. 
+<div style="text-align: justify">
+
+En primer lugar se realiza un análisis de clases latentes (LCA) para identificar y agrupar las variables dependientes según patrones. Para realizar dicho análisis, se clasifican las respuestas en atribuciones internas o externas. El objetivo principal de realizar LCA es para generar una regresión de tres pasos, consistiendo el primer y segundo paso en generar y asignar las clases predichas para cada paso. Para ello, se utilizó la librería “poLCA” de R, versión 1.4.1.
+
+Luego, se revisarán los descriptivos de las variables independientes en los años 2000, 2009 y 2019, con el objetivo de caracterizar el cambio en las percepciones y preferencias meritocráticas en el tiempo a partir de medidas de tendencia central, de dispersión y proporciones.
+
+En tercer lugar, se realizará un modelo de regresión ordinal utilizando como variable dependiente las clases obtenidas a partir del LCA. El optar por una regresión ordinal entrega ventajas de parsimonia a la hora de analizar e interpretar el modelo.
+
+[^1]: La operacionalización de las variables dependientes es algo que me gustaría discutir. Específicamente respecto de las percepciones meritocráticas, para el 2000 se pregunta "En Chile las personas son remuneradas, es decir se les paga por sus esfuerzos/inteligencia y capacidades". De esta manera, se hace referencia a la idea de justicia distributiva. Por otra parte, para las bases de datos del 2009 y 2019 se pregunta: "Para surgir en la vida, ¿cuán importante cree Ud. que es El trabajo duro/Tener un buen nivel de educación?", haciendo referencia a un constructo diferente al de renumeración, es decir, el de la importancia de la meritocracia para surgir en la vida. Una duda que surge es si es posible combinar las preguntas del 2000 siendo que pertenecen a un constructo diferente a las del 2009 y 2019.

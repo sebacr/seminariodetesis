@@ -1,0 +1,7 @@
+﻿concept;items_spa;cats
+**C. Control**;;
+Sexo;Sexo del encuestado/a;Hombre (0) / Mujer (1)
+Edad;Edad del encuestado/a;Escala continua
+Escolarización;Nivel educacional alcanzado por el/la encuestado/a;"""Primaria incompleta menos"" = 1, ""Primaria y secundaria baja"" = 2, ""Secundaria alta"" = 3, ""Terciaria ciclo corto"" = 4, ""Terciaria y Postgrado"" = 4"
+Estatus social subjetivo;En nuestra sociedad, hay grupos que tienden a ubicarse en los niveles más altos y grupos que tienden a ubicarse en los niveles más bajos. ¿Dónde se ubicaría usted?;Escala de 1 a 9
+Identificación política;Sector político con el que el/la encuestado/a se identifica;"""Izquierda""=1, ""Centro""=2, ""Derecha""=3, ""Ninguno/independiente""=3"

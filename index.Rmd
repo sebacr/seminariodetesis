@@ -2,9 +2,9 @@
 title: 'Tesis de grado'
 subtitle: "El efecto de las creencias meritocráticas sobre las atribuciones de pobreza y riqueza"
 author: "Sebastián Cortínez Rojas"
-date: "Fecha" # o para fecha actual: "`r Sys.Date()`"
+date: "`r Sys.Date()`" # o para fecha actual: "`r Sys.Date()`"
 institution: "Universidad de Chile"
-degree: "Tesis de Grado - Carrera de Sociología"
+degree: "Memoria de Título - Carrera de Sociología"
 advisor: "Profesor guía: Juan Carlos Castillo"
 bibliography: [tesis.bib]
 biblio-style: apalike
@@ -15,15 +15,15 @@ documentclass: book
 fontsize: 14pt
 lof: True
 lot: True
-
 ---
-
 
 # Resumen {-}
 
-Resumen  aquí
+<div style="text-align: justify">
+
+El aumento de desigualdades socioeconómicas en Chile y el mundo, como también los mecanismos que las sostienen, son temas relevantes en la discusión pública. Parte de la investigación sociológica se ha abocado a investigar las desigualdades subjetivas, la cual comprende las percepciones, creencias y justificaciones respecto de las desigualdades. En las últimas décadas en Chile, se ha observado una tendencia a explicar las causas de la pobreza a partir de factores individuales, como también un proceso más amplio de individualización y  de aceptación de valores meritocráticos para explicar la distribución de bienes. Las investigaciones sociológicas sobre atribuciones de pobreza y riqueza -esto es, cómo se explican las causas de dichas situaciones- suelen asociar las explicaciones basadas en factores individuales con valores meritocráticos sin comprobar dicha relación de manera empírica. Por ello, se torna relevante la pregunta de ¿Cómo se relaciona la meritocracia con las atribuciones de pobreza y riqueza en el Chile de las últimas décadas? Esto se inserta en la discusión de, por un lado, el mérito como solución a las desigualdades, y por otro, el mérito como justificación de desigualdades. La presente investigación se posiciona bajo la idea de que las creencias meritocráticas legitiman las desigualdades al plantear una relación entre mayores creencias meritocráticas y atribuciones internas de la pobreza y la riqueza. Este documento presenta avances descriptivos y de análisis LCA y OLS sobre las variables mencionadas, utilizando las bases de datos CEP Nº 39 (Marzo-Abril 2000), N° 59 (Mayo-Junio 2009) y N° 83 (Mayo 2019).
 
 
 # Agradecimientos {-}
 
-Agradecimientos aquí.
+

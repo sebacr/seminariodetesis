@@ -1,0 +1,6 @@
+NOTAS: 
+
+script analisis 2019 cambie el data_naomi2019. ASique ojo ahí, ahora sí están incluidos los NA's. Talvez por eso no se muestran tres clases con gscaLCA
+
+Ojo con lo anterior. No se generan 3 clases no sé por qué. Debe tener que ver con proceso anterior de codificación.
+
