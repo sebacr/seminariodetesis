@@ -136,7 +136,7 @@ proc_data %>%
 frq(proc_data$pred_atribuciones)
 ```
 
-```{r classes,echo=FALSE, fig.cap="Correlaciones de Pearson para percepciones y preferencias meritocráticas", fig.align = 'center',results='asis',warning=FALSE, message=FALSE}
+```{r classes,echo=FALSE, fig.cap="Modelo con tres clases latentes", fig.align = 'center',results='asis',warning=FALSE, message=FALSE}
 plot(LCA_3clases)
 ```
 
