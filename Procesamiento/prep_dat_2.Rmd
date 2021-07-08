@@ -11,7 +11,7 @@ options(scipen=999) # valores sin notación científica
 #install.packages("pacman")
 library(pacman)
 #detach("package:memisc", unload = TRUE)
-pacman::p_load(dplyr, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,poLCA)
+pacman::p_load(dplyr, sjmisc, car, sjlabelled,labelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,poLCA)
 #devtools::install_github("melff/memisc",subdir="pkg")
 ```
 
@@ -359,7 +359,7 @@ stargazer(proc_cep_2000, type="text")
 
 
 proc_cep_2000 <- proc_cep_2000 %>%
-  mutate(pem_ambicion = NA)
+  mutate(percep_ambicion = NA)
 
 proc_cep_2000 <- proc_cep_2000 %>%
   mutate(año = 2000)
@@ -566,7 +566,7 @@ proc_cep_2009$TE2P11_C<-as.numeric(proc_cep_2009$TE2P11_C)
 ## etiquetado
 proc_cep_2009 <- proc_cep_2009 %>% dplyr::rename("percep_esfuerzos"=TE2P11_E, # percepcion meritocracia esfuerzo
                                           "percep_inteligencia" =TE2P11_C, # percepcion meritocracia inteligencia y capacidades (talento)
-                                          "pem_ambicion" =TE2P11_D) # percepcion meritocracia ambicion
+                                          "percep_ambicion" =TE2P11_D) # percepcion meritocracia ambicion
 
 
 get_label(proc_cep_2009$percep_esfuerzos)
@@ -575,8 +575,8 @@ proc_cep_2009$percep_esfuerzos <- set_label(x = proc_cep_2009$percep_esfuerzos,l
 get_label(proc_cep_2009$percep_inteligencia)
 proc_cep_2009$percep_inteligencia <- set_label(x = proc_cep_2009$percep_inteligencia,label = "Percepcion de merito inteligencia y capacidades")
 
-get_label(proc_cep_2009$pem_ambicion)
-proc_cep_2009$pem_ambicion <- set_label(x = proc_cep_2009$pem_ambicion,label = "Percepcion de merito ambición")
+get_label(proc_cep_2009$percep_ambicion)
+proc_cep_2009$percep_ambicion <- set_label(x = proc_cep_2009$percep_ambicion,label = "Percepcion de merito ambición")
 
 #### Preferencias merit ####
 
@@ -920,7 +920,7 @@ proc_cep_2019$M2_P1_5<-as.numeric(proc_cep_2019$M2_P1_5)
 ## etiquetado
 proc_cep_2019 <- proc_cep_2019 %>% dplyr::rename("percep_inteligencia"=M2_P1_4, # percepcion meritocracia esfuerzo
                                           "percep_esfuerzos" =M2_P1_5, # percepcion meritocracia inteligencia y capacidades (talento)
-                                          "pem_ambicion" =M2_P1_1) # percepcion meritocracia ambicion
+                                          "percep_ambicion" =M2_P1_1) # percepcion meritocracia ambicion
 
 get_label(proc_cep_2019$percep_esfuerzos)
 proc_cep_2019$percep_esfuerzos <- set_label(x = proc_cep_2019$percep_esfuerzos,label = "Percepcion de merito esfuerzo")
@@ -928,8 +928,8 @@ proc_cep_2019$percep_esfuerzos <- set_label(x = proc_cep_2019$percep_esfuerzos,l
 get_label(proc_cep_2019$percep_inteligencia)
 proc_cep_2019$percep_inteligencia <- set_label(x = proc_cep_2019$percep_inteligencia,label = "Percepcion de merito inteligencia y capacidades")
 
-get_label(proc_cep_2019$pem_ambicion)
-proc_cep_2019$pem_ambicion <- set_label(x = proc_cep_2019$pem_ambicion,label = "Percepcion de merito ambición")
+get_label(proc_cep_2019$percep_ambicion)
+proc_cep_2019$percep_ambicion <- set_label(x = proc_cep_2019$percep_ambicion,label = "Percepcion de merito ambición")
 
 #### Preferencias merit ####
 
@@ -1124,7 +1124,7 @@ proc_data_2019<-as.data.frame(proc_data_2019)
 proc_data_2019$ESS <- set_label(x = proc_data_2019$ESS,label = "Estatus social subjetivo")
 proc_data_2019$id_politica <- set_label(x = proc_data_2019$id_politica,label = "Identificacion politica")
 proc_data_2019$nivel_educ <- set_label(x = proc_data_2019$nivel_educ,label = "Nivel educacional")
-proc_data_2019$pem_ambicion <- set_label(x = proc_data_2019$pem_ambicion,label = "Percepcion meritocratica ambicion")
+proc_data_2019$percep_ambicion <- set_label(x = proc_data_2019$percep_ambicion,label = "Percepcion meritocratica ambicion")
 
 proc_data_2019$Att_p1<-as.factor(proc_data_2019$Att_p1)
 proc_data_2019$Att_p2<-as.factor(proc_data_2019$Att_p2)
@@ -1144,11 +1144,11 @@ sum(is.na(proc_data_2019$Att_r2))
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 # Percepciones
 
-proc_data_2019$pmerit <- (proc_data_2019$percep_inteligencia+proc_data_2019$pem_ambicion+proc_data_2019$percep_esfuerzos)/3
+proc_data_2019$pmerit <- (proc_data_2019$percep_inteligencia+proc_data_2019$percep_ambicion+proc_data_2019$percep_esfuerzos)/3
 
 proc_data_2019$pmerit  <- set_label(x = proc_data_2019$pmerit, label = "Percepción meritocracia promedio")
 
-data_percepcion<-proc_data_2019 %>% dplyr::select(pem_ambicion,percep_inteligencia,percep_esfuerzos)
+data_percepcion<-proc_data_2019 %>% dplyr::select(percep_ambicion,percep_inteligencia,percep_esfuerzos)
 
 # Preferencias
 
@@ -1182,7 +1182,7 @@ Generar variable de atribuciones a partir de clasificación de investigación de
 ## Sacar NA en nueva bbdd
 
 data_naomit2019 <- na.omit(proc_data_2019) 
-
+data_naomit2019 <- data_naomit2019 %>% copy_labels_from(proc_data_2019)
 ## Nueva variable con 3 clases latentes. 
 
 ## PRECAUCION: esto es por mientras. Para hacer analisis de clases latentes se recomienda "latent class regression model". Reisar texto de Linzer y Lewis sobre poLCA
@@ -1271,7 +1271,7 @@ proc_data<-as.data.frame(proc_data)
 proc_data$ESS <- set_label(x = proc_data$ESS,label = "Estatus social subjetivo")
 proc_data$id_politica <- set_label(x = proc_data$id_politica,label = "Identificacion politica")
 proc_data$nivel_educ <- set_label(x = proc_data$nivel_educ,label = "Nivel educacional")
-proc_data$pem_ambicion <- set_label(x = proc_data$pem_ambicion,label = "Percepcion meritocratica ambicion")
+proc_data$percep_ambicion <- set_label(x = proc_data$percep_ambicion,label = "Percepcion meritocratica ambicion")
 
 proc_data$Att_p1<-as.factor(proc_data$Att_p1)
 proc_data$Att_p2<-as.factor(proc_data$Att_p2)
@@ -1308,7 +1308,7 @@ Por ahora no se trabajará con percepcion meritocratica basado en ambicion (no e
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
 colSums(is.na(proc_data))
-proc_data<-subset(proc_data, select = -c(pem_ambicion))
+proc_data<-subset(proc_data, select = -c(percep_ambicion))
 proc_data<-na.omit(proc_data)
 
 # Poner etiquetas faltantes 
@@ -1328,10 +1328,6 @@ proc_data$Att_p2<-as.factor(proc_data$Att_p2)
 proc_data$Att_r1<-as.factor(proc_data$Att_r1)
 proc_data$Att_r2<-as.factor(proc_data$Att_r2)
 
-
-proc_data %>% 
-  dplyr::select(starts_with("Att_")) %>% 
-  names() 
 
 f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
 
@@ -1355,15 +1351,24 @@ proc_data %>%
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
 proc_data %>% 
   dplyr::select(starts_with("Att_")) %>%  
-  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 20000) -> LCA_3clases # BIC = 21464.48
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 20000) -> LCA_3clases # BIC = 21464.48; AIC(3): 21376.14
 ```
 
 ### Agregar columna con clases predichas
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-LCA_3clases$predclass
-
 proc_data <- cbind(proc_data, "pred_atribuciones" = LCA_3clases$predclass)
+proc_data$pred_atribuciones<-as.factor(proc_data$pred_atribuciones)
+proc_data$pred_atribuciones<-set_label(x=proc_data$pred_atribuciones, label = "Atribuciones 3 clases")
+data_predclass_2019$pred_atribuciones <- sjlabelled::set_labels(data_predclass_2019$pred_atribuciones,
+            labels=c( "Externa"=1,
+                      "Ambivalente"=2,
+                      "Interna"=3))
+frq(proc_data$pred_atribuciones)
+# Variable dependiente "ordinal" para regresión
+
+proc_data %>%
+  mutate(pred_atribuciones_ord = ordered(pred_atribuciones)) -> proc_data
 ```
 
 ## Análisis de tres clases pobreza (NO CORRER)

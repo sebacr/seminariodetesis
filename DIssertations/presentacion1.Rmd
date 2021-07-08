@@ -33,6 +33,7 @@ pacman::p_load(kableExtra,
                gtsummary,
                nnet) 
 
+load(file = "../Input/Data_proc/2019/proc_cep_2019.RData")
 load(file = "../Input/Data_proc/2019/data_naomit2019.RData")
 load(file = "../Input/Data_proc/proc_data.RData")
 ```

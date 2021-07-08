@@ -1,0 +1,117 @@
+---
+title: "Untitled"
+author: "Sebastián Cortinez"
+date: "30/6/2021"
+output: html_document
+---
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+options(scipen=999) # valores sin notación científica
+#install.packages("pacman")
+library(pacman)
+#detach("package:memisc", unload = TRUE)
+#install.packages("devtools")
+# devtools::install_github("melff/memisc",subdir="pkg")
+# devtools::install_github("AlineTalhouk/Amisc")
+pacman::p_load(furniture,BiocManager,knitr,dplyr,foreign, sjmisc, car, sjlabelled, stargazer,kableExtra,corrplot,sessioninfo,readxl,pander,xtable, tidyverse, extrafont, ggplot2, forcats, ggpubr, naniar,haven, devtools,summarytools,webshot,pander,table1,gapminder,arsenal,magrittr,Gmisc,magick,htmltools,papeR,data.table,cowplot,gridExtra,reshape,poLCA,parallel,broom,Hmisc,sjPlot,nnet.texreg,MASS)
+
+#webshot::install_phantomjs()
+
+#  Cargar bbdd
+
+load("../Input/Data_proc/proc_data.RData")
+
+# Nueva data sin elemento educación en atribuciones
+
+data_att_sineduc <- proc_data %>% dplyr::select(percep_esfuerzos,percep_inteligencia,pref_responsabilidad,pref_educacion,
+                                                pref_trabajo,at_pobreza1,at_pobreza2,at_riqueza1,at_riqueza2,sexo,edad,
+                                                ESS,nivel_educ,año)
+
+data_att_sineduc[ data_att_sineduc == "La falta de educación" ] <- NA
+data_att_sineduc[ data_att_sineduc == "El nivel educacional alcanzado" ] <- NA
+
+sum(is.na(data_att_sineduc))
+
+data_att_sineduc <- na.omit(data_att_sineduc)
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+data_att_sineduc<-data.table::data.table(data_att_sineduc)
+
+frq(data_att_sineduc$at_pobreza1)
+data_att_sineduc[, Att_p1 := base::ifelse(at_pobreza1 %in% c("La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna",
+               base::ifelse(at_pobreza1 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+data_att_sineduc[, Att_p2 := ifelse(at_pobreza2 %in% c("La flojera y falta de iniciativa", "Los vicios y el alcoholismo"), "atribucion interna", 
+               ifelse(at_pobreza2 %in% c("Las malas políticas econ. del gobierno", "La falta de ayuda económica del gobierno", "Las pocas oportunidades de empleo","La mala suerte","La falta de generocidad de los que tienen más","Porque los padres también eran pobres","Los abusos o injusticias del sistema económico"), "atribucion externa", NA))]
+
+frq(data_att_sineduc$at_riqueza1)
+data_att_sineduc[, Att_r1 := ifelse(at_riqueza1 %in% c("La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza1 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+data_att_sineduc[, Att_r2 := ifelse(at_riqueza2 %in% c("La iniciativa personal", "El trabajo responsable"), "atribucion interna",
+               ifelse(at_riqueza2 %in% c("La fe en dios", "Las ayuda económica del Estado", "Los contactos o 'pitutos' (parientes, amigos)","La situación económica de los padres","Tener una familia unida que apoya","Haciendo dinero a la mala, con manejos deshonestos","La suerte","Las políticas económicas del gobierno"), "atribucion externa", NA))]
+
+data_att_sineduc <- droplevels(data_att_sineduc)
+data_att_sineduc<-as.data.frame(data_att_sineduc)
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+data_att_sineduc$Att_p1<-as.factor(data_att_sineduc$Att_p1)
+data_att_sineduc$Att_p2<-as.factor(data_att_sineduc$Att_p2)
+data_att_sineduc$Att_r1<-as.factor(data_att_sineduc$Att_r1)
+data_att_sineduc$Att_r2<-as.factor(data_att_sineduc$Att_r2)
+
+f <- cbind(Att_p1,Att_p2,Att_r1,Att_r2)~1
+```
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+data_att_sineduc %>% 
+  dplyr::select(starts_with("Att_")) %>%  
+  poLCA(f, ., nclass = 3, nrep = 6, graphs = TRUE, maxiter = 200000) -> LCA_3clases_new # BIC = 
+```
+
+```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
+data_att_sineduc <- cbind(data_att_sineduc, "pred_atribuciones" = LCA_3clases_new$predclass)
+frq(data_att_sineduc$pred_atribuciones)
+
+# Agregar nueva columna de clases como factor
+
+data_att_sineduc$clases_factor<-as.character(data_att_sineduc$pred_atribuciones)
+data_att_sineduc$clases_factor[data_att_sineduc$clases_factor == 1] = "Interna"
+data_att_sineduc$clases_factor[data_att_sineduc$clases_factor == 2] = "Ambivalente"
+data_att_sineduc$clases_factor[data_att_sineduc$clases_factor == 3] = "Externa"
+
+# Ordenar para que interna sea el valor más alto: 
+data_att_sineduc$clases_factor = factor(data_att_sineduc$clases_factor,
+                    levels=c("Externa", "Ambivalente", "Interna"))
+data_att_sineduc$clases_factor<-as.factor(data_att_sineduc$clases_factor)
+
+save(data_att_sineduc,file = "../Input/Data_proc/data_att_sineduc.RData")
+```
+
+# Tablas descriptivas 
+
+## Dependiente (clases de atribuciones)
+
+```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
+furniture::table1(proc_data,
+  "Primera mención Atribuciones de pobreza" = Att_p1, "Segunda mención Atribuciones de pobreza" = Att_p2,bold = TRUE,
+  splitby = ~año,
+  test = TRUE,
+  na.rm = FALSE,
+  format_number = TRUE) -> tab_pob
+
+kbl(tab_pob,table_format, caption = cap3, "html", booktabs = T) %>%
+kable_styling(
+    full_width = T,
+    latex_options = c("hold_position"),
+    position = "center",
+    font_size = 16,
+    bootstrap_options=c("striped", "bordered")) %>%
+  add_header_above(c("Respuestas"=1, "Descrpitivos" = 3),bold = T)  %>%
+  column_spec(column = 1, width = "4 cm", ) %>%
+  column_spec(column = 2,width = "2 cm") %>%
+  column_spec(column = 3,width = "2 cm") %>%
+  column_spec(column = 4,width = "2 cm")
+```

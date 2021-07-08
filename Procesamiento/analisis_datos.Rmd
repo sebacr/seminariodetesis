@@ -36,12 +36,12 @@ load("../Input/Data_proc/proc_data.RData")
 
 
 ```{r echo=FALSE, results='hide',warning=FALSE, message=FALSE}
-proc_data$mean_percep <- (proc_data$pem_inteligencia+proc_data$pem_esfuerzos)/2
+proc_data$mean_percep <- (proc_data$percep_inteligencia+proc_data$percep_esfuerzos)/2
 proc_data$mean_pref <- (proc_data$pref_responsabilidad+proc_data$pref_educacion+proc_data$pref_trabajo)/3
 
 proc_data$año<-as.factor(proc_data$año)
 data_merit <- proc_data %>% dplyr::select(mean_percep,mean_pref,año)
-data_merit <- proc_data %>% dplyr::select(pem_inteligencia,pem_esfuerzos,pref_responsabilidad,pref_educacion,
+data_merit <- proc_data %>% dplyr::select(percep_inteligencia,percep_esfuerzos,pref_responsabilidad,pref_educacion,
                                           pref_trabajo,año)
 data_merit <- na.omit(data_merit) 
 ```
@@ -90,12 +90,12 @@ kable_styling(latex_options = c("striped", "HOLD_position")) %>%
 ### Esfuerzo
 
 ```{r gf2,echo=FALSE, message=FALSE, warning=FALSE, results='asis',fig.cap = "Gráfico P9", fig.align='center', fig.pos='H'}
-frq(proc_data$pem_esfuerzos)
+frq(proc_data$percep_esfuerzos)
 
 
 proc_data %>% 
-  drop_na(pem_esfuerzos) %>%
-  ggplot(aes(pem_esfuerzos, group = año)) + 
+  drop_na(percep_esfuerzos) %>%
+  ggplot(aes(percep_esfuerzos, group = año)) + 
           geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", vjust=-0.25, size=4) + 
           scale_y_continuous(labels=scales::percent) +
           ylab("Frecuencias relativas") +
@@ -110,8 +110,8 @@ proc_data %>%
 
 
 proc_data %>% 
-  drop_na(pem_inteligencia) %>%
-  ggplot(aes(pem_inteligencia, group = año)) + 
+  drop_na(percep_inteligencia) %>%
+  ggplot(aes(percep_inteligencia, group = año)) + 
           geom_bar(aes(y = ..prop.., fill = factor(..x..)), stat="count", vjust=-0.25, size=4) + 
           scale_y_continuous(labels=scales::percent) +
           ylab("Frecuencias relativas") +
@@ -123,7 +123,7 @@ proc_data %>%
 # Tabla de correlación entre preferencias de meritocracia 
 
 ```{r echo=FALSE, results='asis',warning=FALSE, message=FALSE}
-cor_percep <- proc_data %>% dplyr::select(pem_esfuerzos,pem_inteligencia)
+cor_percep <- proc_data %>% dplyr::select(percep_esfuerzos,percep_inteligencia)
 tab_corr(cor_percep,
          triangle = "lower",
          encoding = "Windows-1252") 
@@ -242,6 +242,8 @@ furniture::table1(proc_data,
   na.rm = FALSE,
   format_number = TRUE) -> tab_riq
 
+
+
 table_format = if(is_html_output()) {
   "html"
 } else if(is_latex_output()) {
@@ -298,8 +300,8 @@ kable_styling(latex_options = c("striped", "HOLD_position"),font_size = 16,
   column_spec(column = 1, width = "4 cm", ) %>%
   column_spec(column = 2,width = "2 cm") %>%
   column_spec(column = 3,width = "2 cm") %>%
-  column_spec(column = 4,width = "2 cm") %>%
-  save_kable("../Output/Tablas/atribuciones_riqueza_tres_años.html")
+  column_spec(column = 4,width = "2 cm") #%>%
+#  save_kable("../Output/Tablas/atribuciones_riqueza_tres_años.html")
 
 
 ```
@@ -398,7 +400,7 @@ write2html(
 ### Aparecen respuestas como categorica
 
 ```{r sumt, echo=FALSE, message=FALSE, warning=FALSE, results='asis'}
-basecor<- proc_data %>% dplyr::select(pem_esfuerzos,pem_inteligencia,pref_responsabilidad,pref_educacion,pref_trabajo,año)
+basecor<- proc_data %>% dplyr::select(percep_esfuerzos,percep_inteligencia,pref_responsabilidad,pref_educacion,pref_trabajo,año)
 
 dfsum<- dfSummary(basecor,
                plain.ascii = FALSE,
@@ -417,7 +419,7 @@ dfsum$Variable <- NULL # delete variable column
 
 print(dfsum)
 
-basecor$pem_esfuerzos<-as.numeric(basecor$pem_esfuerzos)
+basecor$percep_esfuerzos<-as.numeric(basecor$percep_esfuerzos)
 
 basecor %>% tbl_summary(by = año,
     statistic = list(all_continuous() ~ "{mean} ({sd})",
